@@ -3,17 +3,18 @@ cmake_minimum_required(VERSION 3.22)
 # set the project name
 project(Combat)
 
-find_package(SFML 
-  COMPONENTS 
-    system window graphics network audio REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
+find_package(OpenGL REQUIRED)
 
 
 #Bring the headers, such as Student.h into the project
 set(MY_HEADER_FILES
     include/home.hxx
+
 )
 
 set(MY_SOURCE_FILES
+    src/glad.c
     src/main.cxx 
     src/home.cxx
 )
@@ -24,5 +25,6 @@ add_executable(Combat
 	${MY_SOURCE_FILES}
 )
 
+
 # Link executable to required SFML libraries
-target_link_libraries(Combat sfml-graphics)
+target_link_libraries(Combat glfw OpenGL::GL)
