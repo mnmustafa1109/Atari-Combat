@@ -10,13 +10,14 @@ find_package(OpenGL REQUIRED)
 #Bring the headers, such as Student.h into the project
 set(MY_HEADER_FILES
     include/home.hxx
-
+    include/shader.hxx
 )
 
 set(MY_SOURCE_FILES
     src/glad.c
     src/main.cxx 
     src/home.cxx
+    src/shader.cxx
 )
 
 
