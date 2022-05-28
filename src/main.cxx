@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
+#include "../include/glm/glm.hpp"
+#include "../include/glm/gtc/matrix_transform.hpp"
+#include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/stb_image.h"
 
 #include "../include/shader.hxx"
@@ -69,6 +72,7 @@ int main() {
         -0.9f,  -0.8f, 0.0f, 1.0f, 1.0f, 0.0f,  // bottom left
         -0.45f, 0.2f,  0.0f, 1.0f, 0.0f, 1.0f   // top
     };
+
     float secondTriangle[] = {
         0.0f,  -0.8f, 0.0f,  // left
         0.9f,  -0.8f, 0.0f,  // right
@@ -115,8 +119,8 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the textures[1]
-    data = stbi_load("../data/textures/flags.png", &width, &height,
-                     &nrChannels, 0);
+    data = stbi_load("../data/textures/flags.png", &width, &height, &nrChannels,
+                     0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, data);
@@ -125,7 +129,6 @@ int main() {
         std::cout << "Failed to load textures[1]" << std::endl;
     }
     stbi_image_free(data);
-
 
     unsigned int VBOs[3], VAOs[3], EBO;
     glGenVertexArrays(3, VAOs);  // we can also generate multiple VAOs or
@@ -184,7 +187,7 @@ int main() {
 
     shaderProgram3.use();
     shaderProgram3.set("texture1", 0);
-    shaderProgram3.set("texture2", 1); // or with shader clas
+    shaderProgram3.set("texture2", 1);  // or with shader clas
 
     // render loop
     // -----------
@@ -201,6 +204,12 @@ int main() {
         // now when we draw the triangle we first use the vertex and orange
         // fragment shader from the first program
         shaderProgram1.use();
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(),
+                            glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+        shaderProgram1.Matrix4fv("transform", trans);
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         // this call should output an orange triangle
@@ -218,6 +227,11 @@ int main() {
         // then we draw the rectangle using the data from our second VAO
 
         shaderProgram3.use();
+        glm::mat4 trans1 = glm::mat4(1.0f);
+        trans1 = glm::translate(trans1, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans1 = glm::rotate(trans1, (float)glfwGetTime(),
+                             glm::vec3(0.0f, 0.0f, 1.0f));
+        shaderProgram1.Matrix4fv("transform", trans1);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
@@ -250,7 +264,6 @@ int main() {
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback

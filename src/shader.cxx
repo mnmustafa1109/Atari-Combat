@@ -3,6 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "../include/glm/glm.hpp"
+
+#include "../include/glm/gtc/matrix_transform.hpp"
+#include "../include/glm/gtc/type_ptr.hpp"
 
 #include "../include/shader.hxx"
 
@@ -63,7 +67,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
         glGetShaderInfoLog(fragment, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
                   << infoLog << std::endl;
-    }else {
+    } else {
         std::cout << fragmentPath << " compiled successfully" << std::endl;
     }
 
@@ -105,4 +109,9 @@ void Shader::setv4f(const std::string& name,
                     float v2,
                     float v3) const {
     glUniform4f(glGetUniformLocation(ID, name.c_str()), v0, v1, v2, v3);
+}
+
+void Shader::Matrix4fv(const std::string& name, const glm::mat4& matrix) const {
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
+                       glm::value_ptr(matrix));
 }
