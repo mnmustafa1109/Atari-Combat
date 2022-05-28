@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 set(MY_HEADER_FILES
     include/home.hxx
     include/shader.hxx
+    include/stb_image.h
 )
 
 set(MY_SOURCE_FILES
@@ -18,6 +19,7 @@ set(MY_SOURCE_FILES
     src/main.cxx 
     src/home.cxx
     src/shader.cxx
+    src/stb_image.c
 )
 
 
