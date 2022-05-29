@@ -205,10 +205,10 @@ int main() {
         // fragment shader from the first program
         shaderProgram1.use();
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(),
-                            glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+        // trans = glm::rotate(trans, (float)glfwGetTime(),
+        //                     glm::vec3(0.0f, 0.0f, 1.0f));
+        // trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+        // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
         shaderProgram1.Matrix4fv("transform", trans);
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -228,9 +228,10 @@ int main() {
 
         shaderProgram3.use();
         glm::mat4 trans1 = glm::mat4(1.0f);
-        trans1 = glm::translate(trans1, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans1 = glm::scale(trans1, glm::vec3(0.4, 0.4, 0.4));
         trans1 = glm::rotate(trans1, (float)glfwGetTime(),
                              glm::vec3(0.0f, 0.0f, 1.0f));
+        trans1 = glm::translate(trans1, glm::vec3(-0.23f, -0.7f, 0.0f));
         shaderProgram1.Matrix4fv("transform", trans1);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
