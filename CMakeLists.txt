@@ -15,6 +15,7 @@ set(MY_HEADER_FILES
     include/glm/glm.hpp
     include/glm/gtc/matrix_transform.hpp
     include/glm/gtc/type_ptr.hpp
+    include/camera.hxx
 )
 
 set(MY_SOURCE_FILES
