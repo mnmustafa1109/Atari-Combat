@@ -10,7 +10,7 @@
 
 #include "../include/shader.hxx"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+Shader::Shader(const std::string vertexPath,const std::string fragmentPath) {
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
     std::string fragmentCode;
@@ -114,4 +114,12 @@ void Shader::setv4f(const std::string& name,
 void Shader::Matrix4fv(const std::string& name, const glm::mat4& matrix) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
                        glm::value_ptr(matrix));
+}
+
+Shader::~Shader() {
+    glDeleteProgram(ID);
+}
+
+Shader::Shader() {
+    ID = 0;
 }

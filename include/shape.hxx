@@ -22,20 +22,30 @@ class Shape {
     float z;
     float width;
     float height;
+    float angle;
 
-    Shape();
 
    public:
+    Shape();
     Shape(SHAPE shape,
           float x,
           float y,
           float z,
           float width,
           float height,
+          float angle,
           Texture* texture,
           Shader* shader);
     ~Shape();
     void draw();
+    void move(float x, float y, float z, float angle, float scale,Shape* shape);
+    bool isColliding(Shape* shape);
+    float getX();
+    float getY();
+    float getZ();
+    float getWidth();
+    float getHeight();
+    float getAngle();
 };
 
 #endif  // !SHAPE_HXX

@@ -16,6 +16,8 @@ set(MY_HEADER_FILES
     include/shape.hxx
     include/texture.hxx
     include/stb_image.h
+    include/movement.hxx
+    include/resourceman.hxx
 )
 
 set(MY_SOURCE_FILES
@@ -27,6 +29,8 @@ set(MY_SOURCE_FILES
     src/shape.cxx
     src/texture.cxx
     src/stb_image.c
+    src/movement.cxx
+    src/resourceman.cxx
 )
 
 

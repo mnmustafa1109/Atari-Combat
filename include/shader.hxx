@@ -11,7 +11,9 @@ class Shader {
     // the program ID
     unsigned int ID;
     // constructor reads and builds the shader
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader();
+    ~Shader();
+    Shader(const std::string vertexPath, const std::string fragmentPath);
     // use/activate the shader
     void use();
     // utility uniform functions
@@ -24,5 +26,6 @@ class Shader {
                 float v2,
                 float v3) const;
     void Matrix4fv(const std::string& name, const glm::mat4& matrix) const;
+    
 };
 #endif

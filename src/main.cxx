@@ -6,6 +6,7 @@
 #include "../include/game.hxx"
 
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 // settings

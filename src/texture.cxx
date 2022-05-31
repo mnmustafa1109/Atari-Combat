@@ -1,13 +1,14 @@
-#include "../include/stb_image.h"
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
+#include "../include/stb_image.h"
 
-#include "../include/texture.hxx"
 #include <iostream>
+#include "../include/texture.hxx"
 
-Texture::Texture(const char* path) {
+Texture::Texture(const std::string path) {
     int width, height, nrChannels;
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    unsigned char* data =
+        stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data) {
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -35,5 +36,9 @@ Texture::~Texture() {
     glDeleteTextures(1, &texture);
 }
 
-unsigned int Texture::getTexture() { return texture; }
+Texture::Texture(){
+}
 
+unsigned int Texture::getTexture() {
+    return texture;
+}

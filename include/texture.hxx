@@ -12,9 +12,9 @@ class Texture {
     unsigned int texture;
     unsigned int width;
     unsigned int height;
-    Texture();
     public:
-    Texture(const char* path);
+    Texture();
+    Texture(const std::string);
     ~Texture();
     unsigned int getTexture();
     void bindTexture();
