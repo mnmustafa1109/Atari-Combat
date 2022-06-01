@@ -11,6 +11,7 @@
 enum SHAPE { CIRCLE, RECTANGLE, TRIANGLE, SQUARE };
 
 class Shape {
+   protected:
     unsigned int VAO;
     unsigned int VBO;
     unsigned int EBO;
@@ -23,7 +24,7 @@ class Shape {
     float width;
     float height;
     float angle;
-
+    float scale;
 
    public:
     Shape();
@@ -36,9 +37,18 @@ class Shape {
           float angle,
           Texture* texture,
           Shader* shader);
+    void create(SHAPE shape,
+                float x,
+                float y,
+                float z,
+                float width,
+                float height,
+                float angle,
+                Texture* texture,
+                Shader* shader);
     ~Shape();
     void draw();
-    void move(float x, float y, float z, float angle, float scale,Shape* shape);
+    void move(float x, float y, float z, float angle, float scale);
     bool isColliding(Shape* shape);
     float getX();
     float getY();

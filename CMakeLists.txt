@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_CXX_STANDARD 17)
 
 # set the project name
 project(Combat)
@@ -18,6 +19,10 @@ set(MY_HEADER_FILES
     include/stb_image.h
     include/movement.hxx
     include/resourceman.hxx
+    include/vehicle.hxx
+    include/bullet.hxx
+    include/uuid.h
+    include/map.hxx
 )
 
 set(MY_SOURCE_FILES
@@ -31,8 +36,10 @@ set(MY_SOURCE_FILES
     src/stb_image.c
     src/movement.cxx
     src/resourceman.cxx
+    src/vehicle.cxx
+    src/bullet.cxx
+    src/map.cxx
 )
-
 
 add_executable(Combat
 	${MY_HEADER_FILES}

@@ -8,7 +8,7 @@
 #include "../include/shape.hxx"
 
 Shape::Shape() {
-    
+    this -> angle = 0.0f;
 }
 
 Shape::Shape(SHAPE shape,
@@ -27,6 +27,63 @@ Shape::Shape(SHAPE shape,
     this->width = width;
     this->height = height;
     this->angle = angle;
+        this->scale = 1.0;
+    if (shape == RECTANGLE || shape == SQUARE) {
+        this->texture = texture;
+        this->shader = shader;
+        // rectangle having zero zero as center
+        float vertices[] = {
+            // positions          // colors           // texture coords
+            x + width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            x - width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            x - width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+            x + width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+        };
+        unsigned int indices[] = {
+            0, 1, 2, 0, 2, 3,
+        };
+
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+                     GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                     GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                              (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glBindVertexArray(0);
+    }
+}
+
+void Shape::create(SHAPE shape,
+                   float x,
+                   float y,
+                   float z,
+                   float width,
+                   float height,
+                   float angle,
+                   Texture* texture,
+                   Shader* shader) {
+    this->shape = shape;
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->width = width;
+    this->height = height;
+    this->angle = angle;
+    this->scale = 1.0;
     if (shape == RECTANGLE || shape == SQUARE) {
         this->texture = texture;
         this->shader = shader;
@@ -75,7 +132,7 @@ Shape::~Shape() {
 }
 
 void Shape::draw() {
-    Movement::getInstance()->move(this->x, this->y, this->z, this->angle, 1.0);
+    Movement::getInstance()->move(this->x, this->y, this->z, this->angle, this ->scale);
     shader->Matrix4fv("projection", Movement::getInstance()->getProjection());
     shader->Matrix4fv("view", Movement::getInstance()->getView());
     shader->Matrix4fv("model", Movement::getInstance()->getModel());
@@ -95,36 +152,16 @@ void Shape::move(float x,
                  float y,
                  float z,
                  float angle,
-                 float scale,
-                 Shape* shape) {
-    // add using trignometric rule
-    float speed = 0.01f;
-    static bool first = false;
-    if (first) {
-        if (this->isColliding(shape)) {
-            speed = -0.01f;
-        }
-    }
-    if (!first) {
-        speed = 1.5f;
-    }
-
-    first = true;
-    this->x -= y * speed * sin(glm::radians(this->angle));
-    this->y += y * speed * cos(glm::radians(this->angle));
-    if (this->x < -1.35f) {
-        this->x = 1.35f;
-    }
-    if (this->x > 1.35f) {
-        this->x = -1.35f;
-    }
-    if (this->y < -1.0f) {
-        this->y = 1.0f;
-    }
-    if (this->y > 1.0f) {
-        this->y = -1.0f;
-    }
+                 float scale) {
+    this->x += x;
+    this->y += y;
+    this->z += z;
     this->angle += angle;
+    // this->scale += scale;
+    // this ->width *= this->scale;
+    // this ->height *= this->scale;
+
+    
     if (this->angle > 360) {
         this->angle -= 360;
     }

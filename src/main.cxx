@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../include/main.hxx"
 #include "../include/game.hxx"
+#include "../include/input.hxx"
 
 
 
@@ -47,9 +48,8 @@ int main() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    glfwSetKeyCallback(window, key_callback);
     glEnable(GL_TEXTURE_2D);
-
     game(window);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
