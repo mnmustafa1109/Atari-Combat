@@ -36,6 +36,7 @@ class ResourceMan {
     std::map<std::string, Bullet*> & getBullets();
     Map& getMap(std::string name,M_TYPE type);
     static ResourceMan* getInstance();
+    ~ResourceMan();
 
    private:
     static ResourceMan* instance;

@@ -45,12 +45,21 @@ int Bullet::move() {
     elapsed_seconds = end - start;
     std::string key;
     Vehicle val;
-    if (elapsed_seconds.count() > 0.22) {
-        for (auto const& [key, val] : vehicles) {
-            if (isColliding(val)) {
-                this->render = false;
-                this->vehicle->dec_bullet();
-                return 1;
+    if (this->getRender() == true) {
+        if (elapsed_seconds.count() > 5) {
+            this->render = false;
+            this->vehicle->dec_bullet();
+            return 1;
+        }
+        if (elapsed_seconds.count() > 0.22) {
+            for (auto const& [key, val] : vehicles) {
+                if (this->getRender() == true) {
+                    if (isColliding(val)) {
+                        this->render = false;
+                        this->vehicle->dec_bullet();
+                        return 1;
+                    }
+                }
             }
         }
         for (auto const& [key, val] : bullets) {
@@ -66,11 +75,6 @@ int Bullet::move() {
                 }
             }
         }
-    }
-    if (elapsed_seconds.count() > 5) {
-        this->render = false;
-        this->vehicle->dec_bullet();
-        return 1;
     }
 
     this->x -= speed * sin(glm::radians(this->angle));

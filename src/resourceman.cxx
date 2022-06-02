@@ -128,3 +128,29 @@ Map& ResourceMan::getMap(std::string name , M_TYPE type) {
     return *maps[name];
 }
 
+ResourceMan::~ResourceMan() {
+    for (auto& i : textures) {
+        delete i.second;
+    }
+    for (auto& i : shaders) {
+        delete i.second;
+    }
+    for (auto& i : shapes) {
+        delete i.second;
+    }
+    for (auto& i : vehicles) {
+        delete i.second;
+    }
+    for (auto& i : bullets) {
+        delete i.second;
+    }
+    for (auto& i : maps) {
+        delete i.second;
+    }
+    textures.clear();
+    shaders.clear();
+    shapes.clear();
+    vehicles.clear();
+    bullets.clear();
+    maps.clear();
+}
