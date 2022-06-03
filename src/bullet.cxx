@@ -69,6 +69,10 @@ int Bullet::move() {
                           << " Health :" << vehicle.second->get_health()
                           << std::endl;
                 colision = true;
+                resourceMan->playSound("destroy");
+                vehicle.second->set_hit(true);
+                vehicle.second->start_last_hit();
+                return 1;
             }
         }
         for (auto bullet : bullets) {
@@ -118,6 +122,9 @@ int Bullet::move() {
         if (hit_no > 3) {
             this->render = false;
             this->vehicle->dec_bullet();
+            resourceMan->playSound("dissapear");
+        } else {
+            resourceMan->playSound("hit");
         }
         return 1;
     }
@@ -127,30 +134,29 @@ int Bullet::move() {
         this->angle = 180 - this->angle;
         colision = true;
         this->x = -1.35f;
-    }
-    if (this->x > 1.35f) {
+    } else if (this->x > 1.35f) {
         this->x = 1.35f;
         this->angle = 180 - this->angle;
         colision = true;
-    }
-    if (this->y < -1.0f) {
+    } else if (this->y < -1.0f) {
         this->y = -1.0f;
         this->angle = -this->angle;
-        speed = -speed;
         colision = true;
-    }
-    if (this->y > 1.0f) {
+    } else if (this->y > 1.0f) {
         this->y = 1.0f;
         this->angle = -this->angle;
-        speed = -speed;
         colision = true;
     }
 
     if (colision == true) {
-        hit_no++;
         if (hit_no > 3) {
             this->render = false;
             this->vehicle->dec_bullet();
+            resourceMan->playSound("dissapear");
+        } else {
+            resourceMan->playSound("hit");
+            hit_no++;
+            speed = -speed;
         }
         return 1;
     }

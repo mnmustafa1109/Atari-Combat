@@ -11,6 +11,7 @@
 #include "../include/glm/gtc/matrix_transform.hpp"
 #include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/input.hxx"
+#include "../include/irrKlang/irrKlang.h"
 #include "../include/movement.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
@@ -31,6 +32,7 @@ Vehicle::Vehicle(std::string name,
     this->health = 100.0;
     this->name = name;
     this->destroyed = false;
+    this->hit = false;
     this->attack = 10.0f;
     ResourceMan* resourceMan = ResourceMan::getInstance();
 
@@ -107,14 +109,36 @@ void Vehicle::move(float x, float y, float rotation) {
     speed = 0.01f;
 }
 
+void ::Vehicle::start_last_hit() {
+    last_hit = std::chrono::system_clock::now();
+}
+
+void Vehicle::draw() {
+    std::chrono::time_point<std::chrono::system_clock> end;
+    std::chrono::duration<double> elapsed_seconds;
+    end = std::chrono::system_clock::now();
+    elapsed_seconds = end - last_hit;
+    if (elapsed_seconds.count() > 0.5) {
+        this->hit = false;
+    }
+    if (hit) {
+        glm::vec3 red = {1.0f, 0.3f, 0.3f};
+        Shape::draw(red);
+    } else {
+        Shape::draw();
+    }
+}
+
 void Vehicle::shoot() {
+    ResourceMan* resourceMan = ResourceMan::getInstance();
+
     std::chrono::time_point<std::chrono::system_clock> end;
     std::chrono::duration<double> elapsed_seconds;
     end = std::chrono::system_clock::now();
     elapsed_seconds = end - last_shoot;
-
-    if (elapsed_seconds.count() > 0.7) {
-        if (bullet_count > 10) {
+    if (elapsed_seconds.count() > 0.3) {
+        resourceMan->playSound("shot");
+        if (bullet_count > 20) {
             return;
         } else {
             last_shoot = std::chrono::system_clock::now();
@@ -160,4 +184,12 @@ float Vehicle::get_attack() {
 
 std::string Vehicle::get_name() {
     return name;
+}
+
+bool Vehicle::get_hit() {
+    return hit;
+}
+
+void Vehicle::set_hit(bool x) {
+    hit = x;
 }

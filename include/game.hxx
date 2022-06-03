@@ -13,7 +13,6 @@ class Map;
 
 class Game {
     GLFWwindow* window;
-    irrklang::ISoundEngine* SoundEngine;
     ResourceMan* resourceMan;
     Map* map;
     int level;

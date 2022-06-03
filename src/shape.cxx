@@ -8,7 +8,7 @@
 #include "../include/shape.hxx"
 
 Shape::Shape() {
-    this -> angle = 0.0f;
+    this->angle = 0.0f;
 }
 
 Shape::Shape(SHAPE shape,
@@ -24,7 +24,7 @@ Shape::Shape(SHAPE shape,
     this->x = x;
     this->y = y;
     this->z = z;
-    this-> scale= 1.0f;
+    this->scale = 1.0f;
     this->width = width;
     this->height = height;
     this->angle = angle;
@@ -34,10 +34,10 @@ Shape::Shape(SHAPE shape,
         // rectangle having zero zero as center
         float vertices[] = {
             // positions          // colors           // texture coords
-            x + width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            x - width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            x - width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            x + width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+            x + width / 2, y + height / 2, z, 1.0f, 1.0f,
+            x - width / 2, y + height / 2, z, 0.0f, 1.0f,
+            x - width / 2, y - height / 2, z, 0.0f, 0.0f,
+            x + width / 2, y - height / 2, z, 1.0f, 0.0f,
         };
         unsigned int indices[] = {
             0, 1, 2, 0, 2, 3,
@@ -54,15 +54,13 @@ Shape::Shape(SHAPE shape,
 
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                      GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                               (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                               (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                              (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
+
         glBindVertexArray(0);
     }
 }
@@ -89,10 +87,10 @@ void Shape::create(SHAPE shape,
         // rectangle having zero zero as center
         float vertices[] = {
             // positions          // colors           // texture coords
-            x + width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            x - width / 2, y + height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            x - width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            x + width / 2, y - height / 2, z, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+            x + width / 2, y + height / 2, z, 1.0f, 1.0f,
+            x - width / 2, y + height / 2, z, 0.0f, 1.0f,
+            x - width / 2, y - height / 2, z, 0.0f, 0.0f,
+            x + width / 2, y - height / 2, z, 1.0f, 0.0f,
         };
         unsigned int indices[] = {
             0, 1, 2, 0, 2, 3,
@@ -109,15 +107,13 @@ void Shape::create(SHAPE shape,
 
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                      GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                               (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                               (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                              (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
+
         glBindVertexArray(0);
     }
 }
@@ -130,11 +126,13 @@ Shape::~Shape() {
     shader = nullptr;
 }
 
-void Shape::draw() {
-    Movement::getInstance()->move(this->x, this->y, this->z, this->angle, this ->scale);
+void Shape::draw(glm::vec3 color) {
+    Movement::getInstance()->move(this->x, this->y, this->z, this->angle,
+                                  this->scale);
     shader->Matrix4fv("projection", Movement::getInstance()->getProjection());
     shader->Matrix4fv("view", Movement::getInstance()->getView());
     shader->Matrix4fv("model", Movement::getInstance()->getModel());
+    shader->setv4f("ourColor", color[0], color[1], color[2], 1.0f);
     if (shape == RECTANGLE || shape == SQUARE) {
         shader->use();
         glActiveTexture(GL_TEXTURE0);
@@ -147,11 +145,7 @@ void Shape::draw() {
     Movement::getInstance()->clear();
 }
 
-void Shape::move(float x,
-                 float y,
-                 float z,
-                 float angle,
-                 float scale) {
+void Shape::move(float x, float y, float z, float angle, float scale) {
     this->x += x;
     this->y += y;
     this->z += z;
@@ -160,7 +154,6 @@ void Shape::move(float x,
     // this ->width *= this->scale;
     // this ->height *= this->scale;
 
-    
     if (this->angle > 360) {
         this->angle -= 360;
     }

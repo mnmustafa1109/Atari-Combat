@@ -3,6 +3,7 @@
 
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
+#include "../include/glm/glm.hpp"
 #include "../include/shader.hxx"
 #include "../include/texture.hxx"
 
@@ -47,7 +48,7 @@ class Shape {
                 Texture* texture,
                 Shader* shader);
     ~Shape();
-    void draw();
+    void draw(glm::vec3 color = {1.0f, 1.0f, 1.0f});
     void move(float x, float y, float z, float angle, float scale);
     bool isColliding(Shape* shape);
     float getX();

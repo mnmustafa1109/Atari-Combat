@@ -29,11 +29,12 @@ class Map;
 
 Game::Game() {}
 
+
 Game::Game(GLFWwindow* window) {
     this->window = window;
-    // this->SoundEngine = irrklang::createIrrKlangDevice();
     this->level = 0;
     resourceMan = ResourceMan::getInstance();
+    resourceMan->setInitSoundEngine();
     this->load();
     this->game();
 }
@@ -57,16 +58,16 @@ void Game::load() {
     resourceMan->getTexture("greentank", "../data/textures/green_tank.png");
     resourceMan->getTexture("bluetank", "../data/textures/blue_tank.png");
     resourceMan->getTexture("bullet", "../data/textures/bullet.png");
-    resourceMan->getTexture("desert", "../data/textures/desert.jpg");
-    resourceMan->getTexture("snowy", "../data/textures/snowy.jpg");
-    resourceMan->getTexture("forest", "../data/textures/forest.jpeg");
+    resourceMan->getTexture("desert", "../data/background/desert.jpg");
+    resourceMan->getTexture("snowy", "../data/background/snowy.jpg");
+    resourceMan->getTexture("forest", "../data/background/forest.jpeg");
     resourceMan->getTexture("house1", "../data/textures/h1.jpg");
     resourceMan->getTexture("house2", "../data/textures/h2.jpg");
     resourceMan->getTexture("house3", "../data/textures/h3.jpg");
     resourceMan->getTexture("house4", "../data/textures/h4.jpg");
     resourceMan->getTexture("house5", "../data/textures/h5.jpg");
     resourceMan->getTexture("house6", "../data/textures/h6.jpg");
-    resourceMan->getTexture("border", "../data/textures/border.png");
+    resourceMan->getTexture("border", "../data/background/border.png");
 }
 
 void Game::time_logic() {  // per-frame time logic
@@ -81,6 +82,7 @@ void Game::game() {
     // glfw: initialize and configure
 
     time_logic();
+    resourceMan->playSound("ingame", true);
 
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();

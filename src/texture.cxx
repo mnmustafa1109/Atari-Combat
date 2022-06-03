@@ -25,6 +25,7 @@ Texture::Texture(const std::string path) {
                         GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
+        std::cout << "Texture " << path << " loaded." << std::endl;
         stbi_image_free(data);
     } else {
         std::cout << "Texture failed to load at path: " << path << std::endl;
@@ -40,8 +41,7 @@ Texture::~Texture() {
     glDeleteTextures(1, &texture);
 }
 
-Texture::Texture(){
-}
+Texture::Texture() {}
 
 unsigned int Texture::getTexture() {
     return texture;

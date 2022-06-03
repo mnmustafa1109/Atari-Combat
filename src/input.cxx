@@ -41,9 +41,10 @@ void key_callback(GLFWwindow* window,
     ResourceMan* resourceMan = ResourceMan::getInstance();
     Vehicle& p1 = resourceMan->getVehicle("v1");
     Vehicle& p2 = resourceMan->getVehicle("v2");
-    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            p1.shoot();
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+        p1.shoot();
+    }
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         p2.shoot();
+    }
 }

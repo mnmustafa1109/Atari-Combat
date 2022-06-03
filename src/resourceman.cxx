@@ -1,6 +1,7 @@
 #include "../include/resourceman.hxx"
-#include <algorithm>
+#include <string>
 #include "../include/bullet.hxx"
+#include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
 #include "../include/shader.hxx"
@@ -8,6 +9,15 @@
 #include "../include/texture.hxx"
 #include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
+
+void ResourceMan::setInitSoundEngine() {
+    this->SoundEngine = irrklang::createIrrKlangDevice();
+}
+
+void ResourceMan::playSound(std::string name, bool loop ) {
+    name = "../data/audio/" + name + ".wav";
+    this->SoundEngine->play2D(name.c_str(), loop);
+}
 
 ResourceMan* ResourceMan::getInstance() {
     if (instance == nullptr) {
@@ -123,7 +133,7 @@ Map& ResourceMan::getMap(std::string name, M_TYPE type) {
     if (maps.find(name) == maps.end()) {
         maps[name] = new Map(type);
     }
-    std::cout<< "Map " << name << " created." << std::endl;
+    std::cout << "Map " << name << " created." << std::endl;
     return *maps[name];
 }
 

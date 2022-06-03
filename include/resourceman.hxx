@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "../include/bullet.hxx"
+#include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
 #include "../include/shader.hxx"
@@ -12,8 +13,8 @@
 
 class Vehicle;
 class Bullet;
-enum B_TYPE: short;
-enum V_COLOR: short;
+enum B_TYPE : short;
+enum V_COLOR : short;
 class ResourceMan {
    public:
     Texture& getTexture(std::string name, std::string path);
@@ -54,9 +55,13 @@ class ResourceMan {
     Map& getMap(std::string name, M_TYPE type);
     std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();
+    irrklang::ISoundEngine* getSoundEngine();
+    void playSound(std::string name, bool loop = false);
+    void setInitSoundEngine();
     ~ResourceMan();
 
    private:
+    irrklang::ISoundEngine* SoundEngine;
     static ResourceMan* instance;
     std::map<std::string, Texture*> textures;
     std::map<std::string, Shader*> shaders;
