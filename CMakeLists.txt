@@ -10,13 +10,11 @@ find_package(OpenGL REQUIRED)
 
 #Bring the headers, such as Student.h into the project
 set(MY_HEADER_FILES
-    include/main.hxx
-    include/game.hxx
-    include/input.hxx
-    include/shader.hxx
-    include/shape.hxx
-    include/texture.hxx
-    include/stb_image.h
+include/input.hxx
+include/shader.hxx
+include/shape.hxx
+include/texture.hxx
+include/stb_image.h
     include/movement.hxx
     include/resourceman.hxx
     include/vehicle.hxx
@@ -24,12 +22,13 @@ set(MY_HEADER_FILES
     include/obstacle.hxx
     include/uuid.hxx
     include/map.hxx
+    include/game.hxx
+    include/main.hxx
+    include/irrKlang/irrKlang.h
 )
 
 set(MY_SOURCE_FILES
     src/glad.c
-    src/main.cxx 
-    src/game.cxx
     src/input.cxx
     src/shader.cxx
     src/shape.cxx
@@ -42,6 +41,8 @@ set(MY_SOURCE_FILES
     src/map.cxx
     src/uuid.cxx
     src/obstacle.cxx
+    src/game.cxx
+    src/main.cxx 
 )
 
 add_executable(Combat
@@ -51,4 +52,4 @@ add_executable(Combat
 
 
 # Link executable to required SFML libraries
-target_link_libraries(Combat glfw OpenGL::GL)
+target_link_libraries(Combat glfw OpenGL::GL )

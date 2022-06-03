@@ -1,10 +1,9 @@
+#include "../include/uuid.hxx"
 #include <random>
 #include <sstream>
-#include "../include/uuid.hxx"
+#include "../include/map.hxx"
 #include "../include/obstacle.hxx"
 using namespace uuid;
-
-
 
 // generating a random number depending on the range it gives
 float uuid::gen_random_f(float min, float max) {
@@ -17,7 +16,7 @@ int uuid::gen_random_i(int min, int max) {
     return distr(gen);
 }
 
-H_TYPE  uuid::getRandomHouseType() {
+H_TYPE uuid::getRandomHouseType() {
     int random = gen_random_i(0, 5);
     switch (random) {
         case 0:
@@ -33,6 +32,22 @@ H_TYPE  uuid::getRandomHouseType() {
         case 5:
             return HOUSE6;
     }
+    return HOUSE1;
+}
+
+M_TYPE uuid::getRandomMapType() {
+    int random = gen_random_i(0, 2);
+    switch (random) {
+        case 0:
+            return SNOWY;
+        case 1:
+            return DESERT;
+        case 2:
+            return FOREST;
+        default:
+            return FOREST;
+    }
+    return FOREST;
 }
 
 std::string uuid::generate_uuid_v4() {
@@ -61,4 +76,3 @@ std::string uuid::generate_uuid_v4() {
     };
     return ss.str();
 }
-

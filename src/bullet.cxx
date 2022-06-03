@@ -56,15 +56,19 @@ int Bullet::move() {
             this->vehicle->dec_bullet();
             colision = true;
         }
-        if (elapsed_seconds.count() > 0.22) {
-            for (auto vehicle : vehicles) {
-                if (this->getRender() == true) {
-                    if (isColliding(vehicle.second)) {
-                        this->render = false;
-                        this->vehicle->dec_bullet();
-                        colision = true;
-                    }
-                }
+        for (auto vehicle : vehicles) {
+            if (elapsed_seconds.count() <= 0.22 &&
+                vehicle.second->get_name() == this->vehicle->get_name()) {
+                break;
+            }
+            if (isColliding(vehicle.second)) {
+                this->render = false;
+                this->vehicle->dec_bullet();
+                vehicle.second->dec_health(this->vehicle->get_attack());
+                std::cout << "Vehicle " << vehicle.second->get_name()
+                          << " Health :" << vehicle.second->get_health()
+                          << std::endl;
+                colision = true;
             }
         }
         for (auto bullet : bullets) {
@@ -82,28 +86,26 @@ int Bullet::move() {
             }
         }
         for (auto obstacle : obstacles) {
-            if (this->getRender() == true) {
-                if (isColliding(obstacle.second)) {
-                    // bounce off obstacle
-                    speed = -speed;
-                    colision = true;
-                    if ((tempy < ((obstacle.second->getY() +
-                                   obstacle.second->getHeight() / 2))) &&
-                        (tempy > ((obstacle.second->getY() -
-                                   obstacle.second->getHeight() / 2)))) {
-                        // print angle
-                        std::cout << "x angle: " << this->angle << std::endl;
+            if (isColliding(obstacle.second)) {
+                // bounce off obstacle
+                speed = -speed;
+                colision = true;
+                if ((tempy < ((obstacle.second->getY() +
+                               obstacle.second->getHeight() / 2))) &&
+                    (tempy > ((obstacle.second->getY() -
+                               obstacle.second->getHeight() / 2)))) {
+                    // print angle
+                    std::cout << "x angle: " << this->angle << std::endl;
 
-                        this->angle = 180 - this->angle;
-                    }
-                    if ((tempx < ((obstacle.second->getX() +
-                                   obstacle.second->getWidth() / 2))) &&
-                        (tempx > ((obstacle.second->getX() -
-                                   obstacle.second->getWidth() / 2)))) {
-                        // print angle
-                        std::cout << "y angle: " << this->angle << std::endl;
-                        this->angle = 360 - this->angle;
-                    }
+                    this->angle = 180 - this->angle;
+                }
+                if ((tempx < ((obstacle.second->getX() +
+                               obstacle.second->getWidth() / 2))) &&
+                    (tempx > ((obstacle.second->getX() -
+                               obstacle.second->getWidth() / 2)))) {
+                    // print angle
+                    std::cout << "y angle: " << this->angle << std::endl;
+                    this->angle = 360 - this->angle;
                 }
             }
         }
@@ -119,26 +121,38 @@ int Bullet::move() {
         }
         return 1;
     }
+    colision = false;
     // bounce off walls
     if (this->x < -1.35f) {
         this->angle = 180 - this->angle;
-        speed = -speed;
+        colision = true;
         this->x = -1.35f;
     }
     if (this->x > 1.35f) {
         this->x = 1.35f;
         this->angle = 180 - this->angle;
-        speed = -speed;
+        colision = true;
     }
     if (this->y < -1.0f) {
         this->y = -1.0f;
         this->angle = -this->angle;
         speed = -speed;
+        colision = true;
     }
     if (this->y > 1.0f) {
         this->y = 1.0f;
         this->angle = -this->angle;
         speed = -speed;
+        colision = true;
+    }
+
+    if (colision == true) {
+        hit_no++;
+        if (hit_no > 3) {
+            this->render = false;
+            this->vehicle->dec_bullet();
+        }
+        return 1;
     }
 
     Shape::move(0.0, 0.0, 0.0, 0.0, 0.0);

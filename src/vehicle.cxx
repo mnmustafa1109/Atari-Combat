@@ -30,6 +30,8 @@ Vehicle::Vehicle(std::string name,
     this->speed = 0.01f;
     this->health = 100.0;
     this->name = name;
+    this->destroyed = false;
+    this->attack = 10.0f;
     ResourceMan* resourceMan = ResourceMan::getInstance();
 
     Shader& rectshader = resourceMan->getShader("rectshader");
@@ -61,8 +63,6 @@ void Vehicle::move(float x, float y, float rotation) {
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
     std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
 
-    std::string key;
-    Vehicle val;
     float tempx = this->x;
     float tempy = this->y;
     float tempa = this->angle;
@@ -74,7 +74,6 @@ void Vehicle::move(float x, float y, float rotation) {
     for (auto& vehicle : vehicles) {
         if (vehicle.second->name != this->name) {
             if (isColliding(vehicle.second)) {
-                std::cout << "collision" << std::endl;
                 this->x = tempx;
                 this->y = tempy;
                 this->angle = tempa;
@@ -85,7 +84,6 @@ void Vehicle::move(float x, float y, float rotation) {
 
     for (auto& vehicle : obstacles) {
         if (isColliding(vehicle.second)) {
-            std::cout << "collision" << std::endl;
             this->x = tempx;
             this->y = tempy;
             this->angle = tempa;
@@ -137,10 +135,29 @@ void Vehicle::inc_bullet() {
     bullet_count++;
 }
 
-// void Vehicle::inc_health() {
-//     bulleet_count++;
-// }
+void Vehicle::inc_health(float x) {
+    health += x;
+}
 
-// void Vehicle::dec_health() {
-//     health -= 10;
-// }
+void Vehicle::dec_health(float x) {
+    health -= x;
+}
+
+float Vehicle::get_health() {
+    return health;
+}
+
+bool Vehicle::get_destroyed() {
+    if (health <= 0) {
+        destroyed = true;
+    }
+    return destroyed;
+}
+
+float Vehicle::get_attack() {
+    return attack;
+}
+
+std::string Vehicle::get_name() {
+    return name;
+}

@@ -10,6 +10,8 @@
 
 enum M_TYPE { DESERT, SNOWY, FOREST };
 
+std::string map_name(M_TYPE type);
+
 class Map : public Shape {
     M_TYPE type;
     Shape* border;

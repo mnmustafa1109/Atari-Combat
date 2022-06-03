@@ -11,7 +11,7 @@
 #include "../include/texture.hxx"
 #include <chrono>
 
-enum V_COLOR {
+enum V_COLOR:short {
     RED,
     GREEN,
     BLUE
@@ -24,6 +24,8 @@ class Vehicle:public Shape {
     float health;
     std::string name;
     int bullet_count;
+    bool destroyed;
+    float attack;
     std::chrono::time_point<std::chrono::system_clock> last_shoot;
     public:
         Vehicle();
@@ -32,6 +34,12 @@ class Vehicle:public Shape {
         void shoot();
         void dec_bullet();
         void inc_bullet();
+        void inc_health(float x);
+        void dec_health(float x);
+        float get_health();
+        bool get_destroyed();
+        float get_attack();
+        std::string get_name();
 };
 
 #endif // !VEHICLE_HXX

@@ -6,47 +6,43 @@
 #include "../include/glm/gtc/type_ptr.hpp"
 
 #include <iostream>
+#include <vector>
 
 #include "../include/bullet.hxx"
 #include "../include/game.hxx"
 #include "../include/input.hxx"
+#include "../include/irrKlang/irrKlang.h"
 #include "../include/main.hxx"
+#include "../include/map.hxx"
 #include "../include/movement.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
+#include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
 
 Movement* Movement::instance = nullptr;
 ResourceMan* ResourceMan::instance = nullptr;
 
-Game::Game(){
+class Map;
 
-}
+Game::Game() {}
 
-Game::Game(GLFWwindow* window){
+Game::Game(GLFWwindow* window) {
     this->window = window;
+    // this->SoundEngine = irrklang::createIrrKlangDevice();
+    this->level = 0;
+    resourceMan = ResourceMan::getInstance();
     this->load();
     this->game();
 }
 
-
 void Game::render() {
-    ResourceMan* resourceMan = ResourceMan::getInstance();
-    Map& map = resourceMan->getMap("forest", FOREST);
-
-    std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
-
     // draw background
-    map.draw();
+    map->draw();
 
-    for (auto& bullet : bullets) {
-        if (bullet.second->getRender() && bullet.second != NULL) {
-            bullet.second->draw();
-        }
-    }
-    map.draw_objects();
+    map->draw_objects();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse
     // moved etc.)
@@ -55,7 +51,6 @@ void Game::render() {
 }
 
 void Game::load() {
-    ResourceMan* resourceMan = ResourceMan::getInstance();
     resourceMan->getShader("rectshader", "../shaders/rectangle.vs",
                            "../shaders/rectangle.fs");
     resourceMan->getTexture("redtank", "../data/textures/red_tank.png");
@@ -72,36 +67,62 @@ void Game::load() {
     resourceMan->getTexture("house5", "../data/textures/h5.jpg");
     resourceMan->getTexture("house6", "../data/textures/h6.jpg");
     resourceMan->getTexture("border", "../data/textures/border.png");
-    resourceMan->getMap("snowy", SNOWY);
-    resourceMan->getMap("desert", DESERT);
-    resourceMan->getMap("forest", FOREST);
+}
+
+void Game::time_logic() {  // per-frame time logic
+    // --------------------
+    float currentFrame = glfwGetTime();
+    Movement::getInstance()->setDeltaTime(
+        currentFrame - Movement::getInstance()->getLastFrame());
+    Movement::getInstance()->setLastFrame(currentFrame);
 }
 
 void Game::game() {
     // glfw: initialize and configure
 
-    load();
-    ResourceMan* resourceMan = ResourceMan::getInstance();
+    time_logic();
+
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
+    std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    std::vector<M_TYPE> map_types;
+    map_types.push_back(M_TYPE::DESERT);
+    map_types.push_back(M_TYPE::SNOWY);
+    map_types.push_back(M_TYPE::FOREST);
+    int m_type = uuid::gen_random_i(0, 2);
+    map = &resourceMan->getMap(map_name(map_types[m_type]), map_types[m_type]);
+    map_types.erase(map_types.begin() + m_type);
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
-        // per-frame time logic
-        // --------------------
-        float currentFrame = glfwGetTime();
-        Movement::getInstance()->setDeltaTime(
-            currentFrame - Movement::getInstance()->getLastFrame());
-        Movement::getInstance()->setLastFrame(currentFrame);
-        for (auto& bullet : bullets) {
-            if (bullet.second->getRender() && bullet.second != NULL) {
-                bullet.second->move();
+        for (auto& vehicle : vehicles) {
+            if (vehicle.second->get_destroyed()) {
+                std::cout << "level " << this->level << std::endl;
+                this->level++;
+                if (this->level < 3) {
+                    std::cout << "level " << this->level << std::endl;
+                    resourceMan->getBullets().clear();
+                    std::cout << "Bullets cleared" << std::endl;
+                    resourceMan->getVehicles().clear();
+                    std::cout << "Vehicles cleared" << std::endl;
+                    resourceMan->getObstacles().clear();
+                    std::cout << "Obstacles cleared" << std::endl;
+                    resourceMan->getMaps().clear();
+                    std::cout << "Maps cleared" << std::endl;
+                    m_type = uuid::gen_random_i(0, map_types.size() - 1);
+                    map = &resourceMan->getMap(map_name(map_types[m_type]),
+                                               map_types[m_type]);
+                    map_types.erase(map_types.begin() + m_type);
+                    std::cout << "Map loaded" << std::endl;
+                    break;
+                } else {
+                    return;
+                }
             }
         }
         for (auto& bullet : bullets) {
-            if (bullet.second->getRender() == false && bullet.second != NULL) {
-                // delete bullet.second;
-                // bullets.erase(bullet.first);
+            if (bullet.second->getRender() && bullet.second != NULL) {
+                bullet.second->move();
             }
         }
 

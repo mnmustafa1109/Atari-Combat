@@ -123,7 +123,12 @@ Map& ResourceMan::getMap(std::string name, M_TYPE type) {
     if (maps.find(name) == maps.end()) {
         maps[name] = new Map(type);
     }
+    std::cout<< "Map " << name << " created." << std::endl;
     return *maps[name];
+}
+
+std::map<std::string, Map*>& ResourceMan::getMaps() {
+    return maps;
 }
 // return an obstacle if its created or esle create it
 Obstacle& ResourceMan::getObstacle(std::string name,

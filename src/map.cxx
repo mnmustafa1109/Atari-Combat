@@ -13,6 +13,19 @@
 
 Map::Map(){};
 
+std::string map_name(M_TYPE type) {
+    switch (type) {
+        case DESERT:
+            return "desert";
+        case SNOWY:
+            return "snowy";
+        case FOREST:
+            return "forest";
+        default:
+            return "forest";
+    }
+}
+
 Map::Map(M_TYPE type) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     float x = 2.67f;
@@ -32,6 +45,7 @@ Map::Map(M_TYPE type) {
         Texture& forest = resourceMan->getTexture("forest");
         create(RECTANGLE, 0.0, 0.0, 1.0, x, y, 0.0, &forest, &rectshader);
     }
+    std::cout << "Map background and border created" << std::endl;
     float angle, scale;
     bool isHouse = uuid::gen_random_i(0, 1);
     if (isHouse) {
@@ -69,17 +83,20 @@ Map::Map(M_TYPE type) {
         resourceMan->getObstacle("h4", uuid::getRandomHouseType(), x, y, angle,
                                  scale);
     }
+    std::cout << "Map houses created" << std::endl;
     std::vector<float> xs = {1.1, -1.1};
     std::vector<float> ys = {0.8, -0.8};
     x = uuid::gen_random_i(0, 1);
     y = uuid::gen_random_i(0, 1);
-    resourceMan->getVehicle("v1", BLUE, xs[x], ys[y],uuid::gen_random_f(0.0f,360.0f));
+    resourceMan->getVehicle("v1", BLUE, xs[x], ys[y],
+                            uuid::gen_random_f(0.0f, 360.0f));
     xs.erase(xs.begin() + x);
     ys.erase(ys.begin() + y);
-    resourceMan->getVehicle("v2", RED, xs[0], ys[0],uuid::gen_random_f(0.0f,360.0f));
-    xs.clear ();
-    ys.clear ();
-
+    resourceMan->getVehicle("v2", RED, xs[0], ys[0],
+                            uuid::gen_random_f(0.0f, 360.0f));
+    xs.clear();
+    ys.clear();
+    std::cout << "Map vehicles created" << std::endl;
     this->scale = 1.0;
 }
 
@@ -87,11 +104,18 @@ void Map::draw_objects() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
+
     for (auto& vehicle : vehicles) {
         vehicle.second->draw();
     }
     for (auto& obstacle : obstacles) {
         obstacle.second->draw();
+    }
+    for (auto& bullet : bullets) {
+        if (bullet.second->getRender() && bullet.second != NULL) {
+            bullet.second->draw();
+        }
     }
     border->draw();
 }

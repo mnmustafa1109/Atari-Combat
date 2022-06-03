@@ -10,8 +10,10 @@
 #include "../include/texture.hxx"
 #include "../include/vehicle.hxx"
 
-
-
+class Vehicle;
+class Bullet;
+enum B_TYPE: short;
+enum V_COLOR: short;
 class ResourceMan {
    public:
     Texture& getTexture(std::string name, std::string path);
@@ -50,6 +52,7 @@ class ResourceMan {
     std::map<std::string, Bullet*>& getBullets();
     std::map<std::string, Obstacle*>& getObstacles();
     Map& getMap(std::string name, M_TYPE type);
+    std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();
     ~ResourceMan();
 

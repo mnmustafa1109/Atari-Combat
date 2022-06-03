@@ -12,7 +12,10 @@
 #include "../include/texture.hxx"
 #include "../include/vehicle.hxx"
 
-enum B_TYPE {
+enum V_COLOR:short;
+class Vehicle;
+
+enum B_TYPE:short {
     STANDARD
 };
 
