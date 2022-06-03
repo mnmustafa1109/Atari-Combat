@@ -1,14 +1,13 @@
 #include "../include/resourceman.hxx"
 #include <algorithm>
 #include "../include/bullet.hxx"
+#include "../include/map.hxx"
+#include "../include/obstacle.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
-#include "../include/uuid.h"
+#include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
-#include "../include/map.hxx"
-
-
 
 ResourceMan* ResourceMan::getInstance() {
     if (instance == nullptr) {
@@ -90,13 +89,12 @@ std::map<std::string, Vehicle*>& ResourceMan::getVehicles() {
     return vehicles;
 }
 
-
 Bullet& ResourceMan::getBullet(Vehicle* v,
                                B_TYPE bullet,
                                float x,
                                float y,
                                float angle) {
-    std::string b_name =uuid::generate_uuid_v4();
+    std::string b_name = uuid::generate_uuid_v4();
     while (1) {
         if (bullets.find(b_name) == bullets.end()) {
             bullets[b_name] = new Bullet(b_name, bullet, x, y, angle);
@@ -104,7 +102,7 @@ Bullet& ResourceMan::getBullet(Vehicle* v,
             v->inc_bullet();
             return *bullets[b_name];
         }
-        b_name =uuid::generate_uuid_v4();
+        b_name = uuid::generate_uuid_v4();
     }
 
     return *bullets[b_name];
@@ -121,11 +119,27 @@ std::map<std::string, Bullet*>& ResourceMan::getBullets() {
     return bullets;
 }
 
-Map& ResourceMan::getMap(std::string name , M_TYPE type) {
+Map& ResourceMan::getMap(std::string name, M_TYPE type) {
     if (maps.find(name) == maps.end()) {
         maps[name] = new Map(type);
     }
     return *maps[name];
+}
+// return an obstacle if its created or esle create it
+Obstacle& ResourceMan::getObstacle(std::string name,
+                                   H_TYPE obstacle,
+                                   float x,
+                                   float y,
+                                   float angle,
+                                   float scale) {
+    if (obstacles.find(name) == obstacles.end()) {
+        obstacles[name] = new Obstacle(obstacle, x, y, angle, scale);
+    }
+    return *obstacles[name];
+}
+
+std::map<std::string, Obstacle*>& ResourceMan::getObstacles() {
+    return obstacles;
 }
 
 ResourceMan::~ResourceMan() {
@@ -147,10 +161,14 @@ ResourceMan::~ResourceMan() {
     for (auto& i : maps) {
         delete i.second;
     }
+    for (auto& i : obstacles) {
+        delete i.second;
+    }
     textures.clear();
     shaders.clear();
     shapes.clear();
     vehicles.clear();
     bullets.clear();
     maps.clear();
+    obstacles.clear();
 }

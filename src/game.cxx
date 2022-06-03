@@ -21,38 +21,32 @@
 Movement* Movement::instance = nullptr;
 ResourceMan* ResourceMan::instance = nullptr;
 
-void render(GLFWwindow* window) {
-    std::string key;
-    Vehicle val;
+Game::Game(){
 
+}
+
+Game::Game(GLFWwindow* window){
+    this->window = window;
+    this->load();
+    this->game();
+}
+
+
+void Game::render() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
-    Map& map = resourceMan->getMap("snowy", SNOWY);
+    Map& map = resourceMan->getMap("forest", FOREST);
 
-    std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
 
     // draw background
     map.draw();
 
-    for (auto const& [key, val] : vehicles) {
-        val->draw();
-    }
-    for (auto const& [key, val] : bullets) {
-        if (val->getRender() && val != NULL) {
-            val->move();
+    for (auto& bullet : bullets) {
+        if (bullet.second->getRender() && bullet.second != NULL) {
+            bullet.second->draw();
         }
     }
-    for (auto const& [key, val] : bullets) {
-        if (val->getRender() && val != NULL) {
-            val->draw();
-        }
-    }
-    for (auto const& [key, val] : bullets) {
-        if (val->getRender() == false && val != NULL) {
-            delete val;
-            bullets.erase(key);
-        }
-    }
+    map.draw_objects();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse
     // moved etc.)
@@ -60,8 +54,7 @@ void render(GLFWwindow* window) {
     glfwSwapBuffers(window);
 }
 
-void game(GLFWwindow* window) {
-    // glfw: initialize and configure
+void Game::load() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     resourceMan->getShader("rectshader", "../shaders/rectangle.vs",
                            "../shaders/rectangle.fs");
@@ -69,8 +62,6 @@ void game(GLFWwindow* window) {
     resourceMan->getTexture("greentank", "../data/textures/green_tank.png");
     resourceMan->getTexture("bluetank", "../data/textures/blue_tank.png");
     resourceMan->getTexture("bullet", "../data/textures/bullet.png");
-    resourceMan->getVehicle("p1", RED, 0.5, 0.0, 1.0);
-    resourceMan->getVehicle("p2", GREEN, 0.0, 0.0, 1.0);
     resourceMan->getTexture("desert", "../data/textures/desert.jpg");
     resourceMan->getTexture("snowy", "../data/textures/snowy.jpg");
     resourceMan->getTexture("forest", "../data/textures/forest.jpeg");
@@ -80,9 +71,18 @@ void game(GLFWwindow* window) {
     resourceMan->getTexture("house4", "../data/textures/h4.jpg");
     resourceMan->getTexture("house5", "../data/textures/h5.jpg");
     resourceMan->getTexture("house6", "../data/textures/h6.jpg");
-    resourceMan->getTexture("house7", "../data/textures/h7.jpg");
+    resourceMan->getTexture("border", "../data/textures/border.png");
+    resourceMan->getMap("snowy", SNOWY);
+    resourceMan->getMap("desert", DESERT);
+    resourceMan->getMap("forest", FOREST);
+}
 
-        
+void Game::game() {
+    // glfw: initialize and configure
+
+    load();
+    ResourceMan* resourceMan = ResourceMan::getInstance();
+    std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
 
     // render loop
     // -----------
@@ -93,12 +93,24 @@ void game(GLFWwindow* window) {
         Movement::getInstance()->setDeltaTime(
             currentFrame - Movement::getInstance()->getLastFrame());
         Movement::getInstance()->setLastFrame(currentFrame);
+        for (auto& bullet : bullets) {
+            if (bullet.second->getRender() && bullet.second != NULL) {
+                bullet.second->move();
+            }
+        }
+        for (auto& bullet : bullets) {
+            if (bullet.second->getRender() == false && bullet.second != NULL) {
+                // delete bullet.second;
+                // bullets.erase(bullet.first);
+            }
+        }
 
         // input
         // -----
-        // output frame rate
         processInput(window);
-        render(window);
+
+        // render
+        render();
         glfwPollEvents();
     }
 }

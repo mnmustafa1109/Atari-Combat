@@ -6,7 +6,6 @@
 #include "../include/texture.hxx"
 
 Texture::Texture(const std::string path) {
-    int width, height, nrChannels;
     unsigned char* data =
         stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data) {

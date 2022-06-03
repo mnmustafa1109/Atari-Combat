@@ -50,7 +50,7 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetKeyCallback(window, key_callback);
     glEnable(GL_TEXTURE_2D);
-    game(window);
+    Game game(window);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

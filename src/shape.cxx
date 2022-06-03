@@ -24,10 +24,10 @@ Shape::Shape(SHAPE shape,
     this->x = x;
     this->y = y;
     this->z = z;
+    this-> scale= 1.0f;
     this->width = width;
     this->height = height;
     this->angle = angle;
-        this->scale = 1.0;
     if (shape == RECTANGLE || shape == SQUARE) {
         this->texture = texture;
         this->shader = shader;
@@ -83,7 +83,6 @@ void Shape::create(SHAPE shape,
     this->width = width;
     this->height = height;
     this->angle = angle;
-    this->scale = 1.0;
     if (shape == RECTANGLE || shape == SQUARE) {
         this->texture = texture;
         this->shader = shader;

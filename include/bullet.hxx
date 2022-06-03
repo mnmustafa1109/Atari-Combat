@@ -22,6 +22,7 @@ class Bullet:public Shape {
     float speed ;
     float health;
     Vehicle* vehicle;
+    int hit_no;
     std::chrono::time_point<std::chrono::system_clock> start;
     bool render;
 

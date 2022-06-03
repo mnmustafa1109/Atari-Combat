@@ -21,6 +21,7 @@ Bullet::Bullet(std::string name, B_TYPE type, float x, float y, float angle) {
     this->health = 100.0;
     this->name = name;
     this->render = true;
+    this->hit_no = 0;
     ResourceMan* resourceMan = ResourceMan::getInstance();
 
     Shader& rectshader = resourceMan->getShader("rectshader");
@@ -39,58 +40,107 @@ int Bullet::move() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
+    std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
     std::chrono::time_point<std::chrono::system_clock> end;
     std::chrono::duration<double> elapsed_seconds;
     end = std::chrono::system_clock::now();
     elapsed_seconds = end - start;
-    std::string key;
-    Vehicle val;
+    float tempx = this->x;
+    float tempy = this->y;
+    this->x -= speed * sin(glm::radians(this->angle));
+    this->y += speed * cos(glm::radians(this->angle));
+    bool colision = false;
     if (this->getRender() == true) {
         if (elapsed_seconds.count() > 5) {
             this->render = false;
             this->vehicle->dec_bullet();
-            return 1;
+            colision = true;
         }
         if (elapsed_seconds.count() > 0.22) {
-            for (auto const& [key, val] : vehicles) {
+            for (auto vehicle : vehicles) {
                 if (this->getRender() == true) {
-                    if (isColliding(val)) {
+                    if (isColliding(vehicle.second)) {
                         this->render = false;
                         this->vehicle->dec_bullet();
-                        return 1;
+                        colision = true;
                     }
                 }
             }
         }
-        for (auto const& [key, val] : bullets) {
-            if (key != this->name) {
-                if (val->getRender() == true) {
-                    if (isColliding(val)) {
+        for (auto bullet : bullets) {
+            if (bullet.second->name != this->name) {
+                if (bullet.second->getRender() == true &&
+                    this->getRender() == true) {
+                    if (isColliding(bullet.second)) {
                         this->render = false;
-                        val->setRender(false);
-                        val->vehicle->dec_bullet();
+                        bullet.second->setRender(false);
+                        bullet.second->vehicle->dec_bullet();
                         this->vehicle->dec_bullet();
-                        return 1;
+                        colision = true;
+                    }
+                }
+            }
+        }
+        for (auto obstacle : obstacles) {
+            if (this->getRender() == true) {
+                if (isColliding(obstacle.second)) {
+                    // bounce off obstacle
+                    speed = -speed;
+                    colision = true;
+                    if ((tempy < ((obstacle.second->getY() +
+                                   obstacle.second->getHeight() / 2))) &&
+                        (tempy > ((obstacle.second->getY() -
+                                   obstacle.second->getHeight() / 2)))) {
+                        // print angle
+                        std::cout << "x angle: " << this->angle << std::endl;
+
+                        this->angle = 180 - this->angle;
+                    }
+                    if ((tempx < ((obstacle.second->getX() +
+                                   obstacle.second->getWidth() / 2))) &&
+                        (tempx > ((obstacle.second->getX() -
+                                   obstacle.second->getWidth() / 2)))) {
+                        // print angle
+                        std::cout << "y angle: " << this->angle << std::endl;
+                        this->angle = 360 - this->angle;
                     }
                 }
             }
         }
     }
 
-    this->x -= speed * sin(glm::radians(this->angle));
-    this->y += speed * cos(glm::radians(this->angle));
-    if (this->x < -1.35f) {
-        this->x = 1.35f;
+    if (colision == true) {
+        hit_no++;
+        this->x = tempx;
+        this->y = tempy;
+        if (hit_no > 3) {
+            this->render = false;
+            this->vehicle->dec_bullet();
+        }
+        return 1;
     }
-    if (this->x > 1.35f) {
+    // bounce off walls
+    if (this->x < -1.35f) {
+        this->angle = 180 - this->angle;
+        speed = -speed;
         this->x = -1.35f;
     }
+    if (this->x > 1.35f) {
+        this->x = 1.35f;
+        this->angle = 180 - this->angle;
+        speed = -speed;
+    }
     if (this->y < -1.0f) {
-        this->y = 1.0f;
+        this->y = -1.0f;
+        this->angle = -this->angle;
+        speed = -speed;
     }
     if (this->y > 1.0f) {
-        this->y = -1.0f;
+        this->y = 1.0f;
+        this->angle = -this->angle;
+        speed = -speed;
     }
+
     Shape::move(0.0, 0.0, 0.0, 0.0, 0.0);
     return 0;
 }

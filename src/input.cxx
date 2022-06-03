@@ -11,8 +11,8 @@
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
-    Vehicle& p1 = resourceMan->getVehicle("p1");
-    Vehicle& p2 = resourceMan->getVehicle("p2");
+    Vehicle& p1 = resourceMan->getVehicle("v1");
+    Vehicle& p2 = resourceMan->getVehicle("v2");
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -39,8 +39,8 @@ void key_callback(GLFWwindow* window,
                   int action,
                   int mods) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
-    Vehicle& p1 = resourceMan->getVehicle("p1");
-    Vehicle& p2 = resourceMan->getVehicle("p2");
+    Vehicle& p1 = resourceMan->getVehicle("v1");
+    Vehicle& p2 = resourceMan->getVehicle("v2");
     if (key == GLFW_KEY_Q && action == GLFW_PRESS)
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
             p1.shoot();

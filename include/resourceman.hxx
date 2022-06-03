@@ -1,12 +1,16 @@
 #ifndef RESOURCEMAN_HXX
 #define RESOURCEMAN_HXX
 #include <map>
-#include "../include/shader.hxx"
-#include "../include/shape.hxx"
-#include "../include/vehicle.hxx"
-#include "../include/texture.hxx"
+#include <vector>
 #include "../include/bullet.hxx"
 #include "../include/map.hxx"
+#include "../include/obstacle.hxx"
+#include "../include/shader.hxx"
+#include "../include/shape.hxx"
+#include "../include/texture.hxx"
+#include "../include/vehicle.hxx"
+
+
 
 class ResourceMan {
    public:
@@ -24,17 +28,28 @@ class ResourceMan {
                     float rotation,
                     Texture* texture,
                     Shader* shader);
-                    
+
     Texture& getTexture(std::string name);
     Shader& getShader(std::string name);
     Shape& getShape(std::string name);
-    Vehicle& getVehicle(std::string name, V_COLOR vehicle, float x, float y,float angle);
-    Bullet& getBullet(Vehicle* v, B_TYPE bullet, float x, float y,float angle);
+    Vehicle& getVehicle(std::string name,
+                        V_COLOR vehicle,
+                        float x,
+                        float y,
+                        float angle);
+    Bullet& getBullet(Vehicle* v, B_TYPE bullet, float x, float y, float angle);
     Vehicle& getVehicle(std::string name);
     Bullet& getBullet(std::string name);
-    std::map<std::string, Vehicle*> & getVehicles();
-    std::map<std::string, Bullet*> & getBullets();
-    Map& getMap(std::string name,M_TYPE type);
+    Obstacle& getObstacle(std::string name,
+                          H_TYPE obstacle,
+                          float x,
+                          float y,
+                          float angle,
+                          float scale);
+    std::map<std::string, Vehicle*>& getVehicles();
+    std::map<std::string, Bullet*>& getBullets();
+    std::map<std::string, Obstacle*>& getObstacles();
+    Map& getMap(std::string name, M_TYPE type);
     static ResourceMan* getInstance();
     ~ResourceMan();
 
@@ -46,7 +61,7 @@ class ResourceMan {
     std::map<std::string, Vehicle*> vehicles;
     std::map<std::string, Bullet*> bullets;
     std::map<std::string, Map*> maps;
-
+    std::map<std::string, Obstacle*> obstacles;
 };
 
 #endif  // !RESOURCEMAN_HXX

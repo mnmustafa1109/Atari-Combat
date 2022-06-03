@@ -10,8 +10,9 @@ enum TYPE { COLOR , TEXTURE , BOTH };
 
 class Texture {
     unsigned int texture;
-    unsigned int width;
-    unsigned int height;
+    int width;
+    int height;
+    int nrChannels;
     public:
     Texture();
     Texture(const std::string);

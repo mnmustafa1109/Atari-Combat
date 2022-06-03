@@ -1,9 +1,8 @@
 #include "../include/vehicle.hxx"
 #include <unistd.h>
+#include <algorithm>
 #include <chrono>
 #include <iostream>
-#include <algorithm>
-
 
 #include <string>
 #include "../include/bullet.hxx"
@@ -17,7 +16,7 @@
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
-
+#include "../include/uuid.hxx"
 
 Vehicle::Vehicle() {}
 
@@ -34,20 +33,21 @@ Vehicle::Vehicle(std::string name,
     ResourceMan* resourceMan = ResourceMan::getInstance();
 
     Shader& rectshader = resourceMan->getShader("rectshader");
+
     if (color == RED) {
         Texture& redtank = resourceMan->getTexture("redtank");
-        create(RECTANGLE, 0.0, 0.0, 1.0, 0.14, 0.1667, 0.0, &redtank,
+        create(RECTANGLE, 0.0, 0.0, 1.0, 0.126, 0.15003, 0.0, &redtank,
                &rectshader);
 
     } else if (color == GREEN) {
         Texture& greentank = resourceMan->getTexture("greentank");
 
-        create(RECTANGLE, 0.0, 0.0, 1.0, 0.14, 0.1667, 0.0, &greentank,
+        create(RECTANGLE, 0.0, 0.0, 1.0, 0.126, 0.15003, 0.0, &greentank,
                &rectshader);
     } else if (color == BLUE) {
         Texture& bluetank = resourceMan->getTexture("bluetank");
 
-        create(RECTANGLE, 0.0, 0.0, 1.0, 0.14, 0.1667, 0.0, &bluetank,
+        create(RECTANGLE, 0.0, 0.0, 1.0, 0.126, 0.15003, 0.0, &bluetank,
                &rectshader);
     }
     this->scale = 1.0;
@@ -59,39 +59,55 @@ void Vehicle::move(float x, float y, float rotation) {
 
     ResourceMan* resourceMan = ResourceMan::getInstance();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
 
     std::string key;
     Vehicle val;
-    for (auto const& [key, val] : vehicles) {
-        if (key != this->name) {
-            if (isColliding(val)) {
-                speed = -0.01f;
+    float tempx = this->x;
+    float tempy = this->y;
+    float tempa = this->angle;
+    bool collision = false;
+    this->x -= y * speed * sin(glm::radians(this->angle));
+    this->y += y * speed * cos(glm::radians(this->angle));
+    this->angle += rotation;
+
+    for (auto& vehicle : vehicles) {
+        if (vehicle.second->name != this->name) {
+            if (isColliding(vehicle.second)) {
                 std::cout << "collision" << std::endl;
+                this->x = tempx;
+                this->y = tempy;
+                this->angle = tempa;
+                collision = true;
             }
         }
     }
 
-    this->x -= y * speed * sin(glm::radians(this->angle));
-    this->y += y * speed * cos(glm::radians(this->angle));
-    this->angle += rotation;
-    if (this->x < -1.35f) {
-        this->x = 1.35f;
+    for (auto& vehicle : obstacles) {
+        if (isColliding(vehicle.second)) {
+            std::cout << "collision" << std::endl;
+            this->x = tempx;
+            this->y = tempy;
+            this->angle = tempa;
+            collision = true;
+        }
     }
-    if (this->x > 1.35f) {
-        this->x = -1.35f;
+
+    if (this->x < -1.28f) {
+        this->x = -1.28f;
     }
-    if (this->y < -1.0f) {
-        this->y = 1.0f;
+    if (this->x > 1.28f) {
+        this->x = 1.28f;
     }
-    if (this->y > 1.0f) {
-        this->y = -1.0f;
+    if (this->y < -0.92f) {
+        this->y = -0.92f;
+    }
+    if (this->y > 0.92f) {
+        this->y = 0.92f;
     }
     Shape::move(0.0, 0.0, 0.0, 0.0, 0.0);
     speed = 0.01f;
 }
-
-
-
 
 void Vehicle::shoot() {
     std::chrono::time_point<std::chrono::system_clock> end;
@@ -101,16 +117,13 @@ void Vehicle::shoot() {
 
     if (elapsed_seconds.count() > 0.7) {
         if (bullet_count > 10) {
-
             return;
         } else {
-
-            last_shoot =  std::chrono::system_clock::now();
+            last_shoot = std::chrono::system_clock::now();
             // wait for 1 second
             ResourceMan* resourceMan = ResourceMan::getInstance();
-            
-            Bullet& b1 =
-                resourceMan->getBullet(this, STANDARD, 0.0, 0.0, 0.0);
+
+            Bullet& b1 = resourceMan->getBullet(this, STANDARD, 0.0, 0.0, 0.0);
             b1.shoot(x, y, angle, this);
         }
     }

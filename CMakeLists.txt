@@ -21,7 +21,8 @@ set(MY_HEADER_FILES
     include/resourceman.hxx
     include/vehicle.hxx
     include/bullet.hxx
-    include/uuid.h
+    include/obstacle.hxx
+    include/uuid.hxx
     include/map.hxx
 )
 
@@ -39,6 +40,8 @@ set(MY_SOURCE_FILES
     src/vehicle.cxx
     src/bullet.cxx
     src/map.cxx
+    src/uuid.cxx
+    src/obstacle.cxx
 )
 
 add_executable(Combat
