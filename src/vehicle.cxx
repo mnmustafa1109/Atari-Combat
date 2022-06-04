@@ -222,3 +222,29 @@ void Vehicle::set_hit(bool x) {
 Player* Vehicle::get_player() {
     return player;
 }
+
+std::string Vehicle::get_h_color() {
+    if (color == RED) {
+        return "red_heart";
+    } else if (color == BLUE) {
+        return "blue_heart";
+    } else if (color == GREEN) {
+        return "green_heart";
+    }
+    return "";
+}
+
+std::string Vehicle::get_t_color() {
+    if (color == RED) {
+        return "red_tank";
+    } else if (color == BLUE) {
+        return "blue_tank";
+    } else if (color == GREEN) {
+        return "green_tank";
+    }
+    return "";
+}
+
+V_COLOR Vehicle::get_color() {
+    return color;
+}

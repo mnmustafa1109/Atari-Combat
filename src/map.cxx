@@ -92,18 +92,27 @@ Map::Map(M_TYPE type) {
                             uuid::gen_random_f(0.0f, 360.0f), 0);
     xs.erase(xs.begin() + x);
     ys.erase(ys.begin() + y);
-    resourceMan->getVehicle("v2" ,xs[0], ys[0], uuid::gen_random_f(0.0f, 360.0f),
-                            1);
+    resourceMan->getVehicle("v2", xs[0], ys[0],
+                            uuid::gen_random_f(0.0f, 360.0f), 1);
     xs.clear();
     ys.clear();
     std::cout << "Map vehicles created" << std::endl;
+    std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    heart1 = &(resourceMan->getShape(
+        "heart1", RECTANGLE, -1.91f, 1.37f, 0.0f, 0.32022f, 0.30024f, 0.0f,
+        &resourceMan->getTexture(vehicles["v1"]->get_h_color()),
+        &resourceMan->getShader("rectshader")));
+    heart2 = &(resourceMan->getShape(
+        "heart2", RECTANGLE, 1.91f, 1.37f, 0.0f, 0.32022f, 0.30024f, 0.0f,
+        &resourceMan->getTexture(vehicles["v2"]->get_h_color()),
+        &resourceMan->getShader("rectshader")));
     this->scale = 1.0;
 }
 
 void Map::draw_objects() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
-    std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
 
     for (auto& vehicle : vehicles) {
@@ -118,4 +127,21 @@ void Map::draw_objects() {
         }
     }
     border->draw();
+    for (auto& vehicle : vehicles) {
+        int health = (vehicle.second->get_health())/10;
+        for (int i = 0; i < health; i ++) {
+            if (vehicle.second->get_name() == "v1") {
+                heart1->move(0.3, 0.0, 0.0, 0.0, 0.0);
+                heart1->draw();
+            } else {
+                heart2->move(-0.3, 0.0, 0.0, 0.0, 0.0);
+                heart2->draw();
+            }
+        }
+        if (vehicle.second->get_name() == "v1") {
+            heart1->move(health*(-0.3), 0.0, 0.0, 0.0, 0.0);
+        } else {
+            heart2->move(health*(0.3), 0.0, 0.0, 0.0, 0.0);
+        }
+    }
 }

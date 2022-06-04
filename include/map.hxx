@@ -15,6 +15,8 @@ std::string map_name(M_TYPE type);
 class Map : public Shape {
     M_TYPE type;
     Shape* border;
+    Shape* heart1;
+    Shape* heart2;
     Map();
 
    public:

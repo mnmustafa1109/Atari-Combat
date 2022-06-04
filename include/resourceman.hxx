@@ -20,7 +20,7 @@ enum V_COLOR : short;
 
 class ResourceMan {
    public:
-    Texture& getTexture(std::string name, std::string path);
+    Texture& getTexture(std::string name, std::string path, bool flip);
     Shader& getShader(std::string name,
                       std::string vertexPath,
                       std::string fragmentPath);
@@ -62,8 +62,9 @@ class ResourceMan {
     std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();
     void delSoundEngine();
-
     void playSound(std::string name, bool loop = false);
+    void addSound(std::string name);
+    void updateSound();
     void setInitSoundEngine();
     ~ResourceMan();
 
@@ -78,6 +79,7 @@ class ResourceMan {
     std::map<std::string, Map*> maps;
     std::map<std::string, Obstacle*> obstacles;
     std::map<int, Player*> players;
+    std::map<std::string, irrklang::ISoundSource*> sounds;
 };
 
 #endif  // !RESOURCEMAN_HXX

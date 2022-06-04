@@ -50,8 +50,8 @@ Game::Game(GLFWwindow* window)
     this->load();
     bullets = resourceMan->getBullets();
     vehicles = resourceMan->getVehicles();
-    resourceMan->getPlayer(0, "anon", 100,GREEN);
-    resourceMan->getPlayer(1, "mustafa", 1000,BLUE);
+    resourceMan->getPlayer(0, "anon", 100, GREEN);
+    resourceMan->getPlayer(1, "mustafa", 1000, BLUE);
     this->game();
 }
 
@@ -70,20 +70,35 @@ void Game::render() {
 void Game::load() {
     resourceMan->getShader("rectshader", "../shaders/rectangle.vs",
                            "../shaders/rectangle.fs");
-    resourceMan->getTexture("redtank", "../data/textures/red_tank.png");
-    resourceMan->getTexture("greentank", "../data/textures/green_tank.png");
-    resourceMan->getTexture("bluetank", "../data/textures/blue_tank.png");
-    resourceMan->getTexture("bullet", "../data/textures/bullet.png");
-    resourceMan->getTexture("desert", "../data/background/desert.jpg");
-    resourceMan->getTexture("snowy", "../data/background/snowy.jpg");
-    resourceMan->getTexture("forest", "../data/background/forest.jpeg");
-    resourceMan->getTexture("house1", "../data/textures/h1.jpg");
-    resourceMan->getTexture("house2", "../data/textures/h2.jpg");
-    resourceMan->getTexture("house3", "../data/textures/h3.jpg");
-    resourceMan->getTexture("house4", "../data/textures/h4.jpg");
-    resourceMan->getTexture("house5", "../data/textures/h5.jpg");
-    resourceMan->getTexture("house6", "../data/textures/h6.jpg");
-    resourceMan->getTexture("border", "../data/background/border.png");
+    resourceMan->getTexture("redtank", "../data/textures/red_tank.png", false);
+    resourceMan->getTexture("greentank", "../data/textures/green_tank.png",
+                            false);
+    resourceMan->getTexture("bluetank", "../data/textures/blue_tank.png",
+                            false);
+    resourceMan->getTexture("bullet", "../data/textures/bullet.png", false);
+    resourceMan->getTexture("desert", "../data/background/desert.jpg", false);
+    resourceMan->getTexture("snowy", "../data/background/snowy.jpg", false);
+    resourceMan->getTexture("forest", "../data/background/forest.jpeg", false);
+    resourceMan->getTexture("house1", "../data/textures/h1.jpg", false);
+    resourceMan->getTexture("house2", "../data/textures/h2.jpg", false);
+    resourceMan->getTexture("house3", "../data/textures/h3.jpg", false);
+    resourceMan->getTexture("house4", "../data/textures/h4.jpg", false);
+    resourceMan->getTexture("house5", "../data/textures/h5.jpg", false);
+    resourceMan->getTexture("house6", "../data/textures/h6.jpg", false);
+    resourceMan->getTexture("border", "../data/background/border.png", false);
+    resourceMan->getTexture("red_heart", "../data/textures/red_heart.png",
+                            true);
+    resourceMan->getTexture("green_heart", "../data/textures/green_heart.png",
+                            true);
+    resourceMan->getTexture("blue_heart", "../data/textures/blue_heart.png",
+                            true);
+    resourceMan->addSound("hit");
+    resourceMan->addSound("shot");
+    resourceMan->addSound("damage");
+    resourceMan->addSound("ingame");
+    resourceMan->addSound("queue");
+    resourceMan->addSound("dissapear");
+    resourceMan->addSound("destroy");
     map_types.push_back(M_TYPE::DESERT);
     map_types.push_back(M_TYPE::SNOWY);
     map_types.push_back(M_TYPE::FOREST);
@@ -171,6 +186,7 @@ void Game::game() {
 
         // render
         render();
+        // resourceMan->updateSound();
         glfwPollEvents();
     }
     resourceMan->delSoundEngine();

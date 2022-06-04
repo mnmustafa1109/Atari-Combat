@@ -6,16 +6,17 @@
 
 #include <iostream>
 
-enum TYPE { COLOR , TEXTURE , BOTH };
+enum TYPE { COLOR, TEXTURE, BOTH };
 
 class Texture {
     unsigned int texture;
     int width;
     int height;
     int nrChannels;
-    public:
+
+   public:
     Texture();
-    Texture(const std::string);
+    Texture(const std::string, bool flip);
     ~Texture();
     unsigned int getTexture();
     void bindTexture();

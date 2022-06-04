@@ -4,28 +4,50 @@
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
+#include "../include/player.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
 #include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
-#include "../include/player.hxx"
 
 void ResourceMan::setInitSoundEngine() {
-    this->SoundEngine = irrklang::createIrrKlangDevice();
+    this->SoundEngine = irrklang::createIrrKlangDevice(
+        irrklang::ESOD_AUTO_DETECT,
+        irrklang::ESEO_FORCE_32_BIT | irrklang::ESEO_USE_3D_BUFFERS);
     if (!this->SoundEngine) {
         std::cout << "Could not start sound engine" << std::endl;
-    } 
+    }
 }
 
-void ResourceMan::playSound(std::string name, bool loop ) {
-    name = "../data/audio/" + name + ".ogg";
-    this->SoundEngine->play2D(name.c_str(), loop);
+void ResourceMan::addSound(std::string name) {
+    std::string path = "../data/audio/" + name + ".ogg";
+    if (sounds.find(name) == sounds.end()) {
+        sounds[name] = SoundEngine->addSoundSourceFromFile(
+            path.c_str(), irrklang::ESM_AUTO_DETECT, true);
+    } else {
+        // sounds[name]->setIsPaused(false);
+    }
+    return;
 }
+
+void ResourceMan::playSound(std::string name, bool loop) {
+    if (sounds.find(name) == sounds.end()) {
+        std::cout << "Sound " << name << " not found" << std::endl;
+    } else {
+        SoundEngine->play2D(sounds[name], loop);
+    }
+    return;
+}
+
+void playSound(std::string name) {}
 
 void ResourceMan::delSoundEngine() {
     this->SoundEngine->drop();
+}
 
+void ResourceMan::updateSound() {
+    SoundEngine->update();
 }
 
 ResourceMan* ResourceMan::getInstance() {
@@ -35,9 +57,11 @@ ResourceMan* ResourceMan::getInstance() {
     return instance;
 }
 
-Texture& ResourceMan::getTexture(std::string name, std::string path) {
+Texture& ResourceMan::getTexture(std::string name,
+                                 std::string path,
+                                 bool flip) {
     if (textures.find(name) == textures.end()) {
-        textures[name] = new Texture(path);
+        textures[name] = new Texture(path, flip);
     }
     return *textures[name];
 }
@@ -69,7 +93,8 @@ Shape& ResourceMan::getShape(std::string name,
 Vehicle& ResourceMan::getVehicle(std::string name,
                                  float x,
                                  float y,
-                                 float angle,int id) {
+                                 float angle,
+                                 int id) {
     if (vehicles.find(name) == vehicles.end()) {
         vehicles[name] = new Vehicle(name, x, y, angle, id);
     }
@@ -169,9 +194,12 @@ std::map<int, Player*>& ResourceMan::getPlayers() {
     return players;
 }
 
-Player& ResourceMan::getPlayer(int id,std::string name, int highscore,V_COLOR color) {
+Player& ResourceMan::getPlayer(int id,
+                               std::string name,
+                               int highscore,
+                               V_COLOR color) {
     if (players.find(id) == players.end()) {
-        players[id] = new Player(id, name, highscore ,color);
+        players[id] = new Player(id, name, highscore, color);
     }
     return *players[id];
 }

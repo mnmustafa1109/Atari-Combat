@@ -5,7 +5,12 @@
 #include <iostream>
 #include "../include/texture.hxx"
 
-Texture::Texture(const std::string path) {
+Texture::Texture(const std::string path, bool flip) {
+    if (flip) {
+        stbi_set_flip_vertically_on_load(true);
+    } else {
+        stbi_set_flip_vertically_on_load(false);
+    }
     unsigned char* data =
         stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data) {

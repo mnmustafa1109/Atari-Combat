@@ -57,7 +57,7 @@ int Bullet::move() {
             colision = true;
         }
         for (auto vehicle : vehicles) {
-            if (elapsed_seconds.count() <= 0.1 &&
+            if (elapsed_seconds.count() <= 0.17 &&
                 vehicle.second->get_name() == this->vehicle->get_name()) {
             } else if (isColliding(vehicle.second)) {
                 this->render = false;

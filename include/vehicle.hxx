@@ -47,6 +47,10 @@ class Vehicle : public Shape {
     void start_last_hit();
     void draw();
     Player* get_player();
+    std::string get_h_color();
+    std::string get_t_color();
+    
+    V_COLOR get_color();
 };
 
 #endif  // !VEHICLE_HXX
