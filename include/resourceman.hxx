@@ -6,6 +6,7 @@
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
+#include "../include/player.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
@@ -13,8 +14,10 @@
 
 class Vehicle;
 class Bullet;
+class Player;
 enum B_TYPE : short;
 enum V_COLOR : short;
+
 class ResourceMan {
    public:
     Texture& getTexture(std::string name, std::string path);
@@ -36,10 +39,10 @@ class ResourceMan {
     Shader& getShader(std::string name);
     Shape& getShape(std::string name);
     Vehicle& getVehicle(std::string name,
-                        V_COLOR vehicle,
                         float x,
                         float y,
-                        float angle);
+                        float angle,
+                        int id);
     Bullet& getBullet(Vehicle* v, B_TYPE bullet, float x, float y, float angle);
     Vehicle& getVehicle(std::string name);
     Bullet& getBullet(std::string name);
@@ -49,13 +52,17 @@ class ResourceMan {
                           float y,
                           float angle,
                           float scale);
+    Player& getPlayer(int id, std::string name, int highscore, V_COLOR color);
+    Player& getPlayer(int id);
     std::map<std::string, Vehicle*>& getVehicles();
     std::map<std::string, Bullet*>& getBullets();
     std::map<std::string, Obstacle*>& getObstacles();
+    std::map<int, Player*>& getPlayers();
     Map& getMap(std::string name, M_TYPE type);
     std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();
-    irrklang::ISoundEngine* getSoundEngine();
+    void delSoundEngine();
+
     void playSound(std::string name, bool loop = false);
     void setInitSoundEngine();
     ~ResourceMan();
@@ -70,6 +77,7 @@ class ResourceMan {
     std::map<std::string, Bullet*> bullets;
     std::map<std::string, Map*> maps;
     std::map<std::string, Obstacle*> obstacles;
+    std::map<int, Player*> players;
 };
 
 #endif  // !RESOURCEMAN_HXX

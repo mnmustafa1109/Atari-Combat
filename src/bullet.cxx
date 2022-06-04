@@ -57,21 +57,27 @@ int Bullet::move() {
             colision = true;
         }
         for (auto vehicle : vehicles) {
-            if (elapsed_seconds.count() <= 0.22 &&
+            if (elapsed_seconds.count() <= 0.1 &&
                 vehicle.second->get_name() == this->vehicle->get_name()) {
-                break;
-            }
-            if (isColliding(vehicle.second)) {
+            } else if (isColliding(vehicle.second)) {
                 this->render = false;
                 this->vehicle->dec_bullet();
                 vehicle.second->dec_health(this->vehicle->get_attack());
-                std::cout << "Vehicle " << vehicle.second->get_name()
+                std::cout << "Player "
+                          << vehicle.second->get_player()->getName()
                           << " Health :" << vehicle.second->get_health()
                           << std::endl;
                 colision = true;
                 resourceMan->playSound("destroy");
                 vehicle.second->set_hit(true);
                 vehicle.second->start_last_hit();
+                this->vehicle->get_player()->setScore(10);
+                vehicle.second->get_player()->setScore(-10);
+                std::cout << "Player "
+                          << vehicle.second->get_player()->getName()
+                          << " Score :"
+                          << vehicle.second->get_player()->getScore()
+                          << std::endl;
                 return 1;
             }
         }

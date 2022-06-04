@@ -9,14 +9,23 @@
 #include "../include/texture.hxx"
 #include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
+#include "../include/player.hxx"
 
 void ResourceMan::setInitSoundEngine() {
     this->SoundEngine = irrklang::createIrrKlangDevice();
+    if (!this->SoundEngine) {
+        std::cout << "Could not start sound engine" << std::endl;
+    } 
 }
 
 void ResourceMan::playSound(std::string name, bool loop ) {
-    name = "../data/audio/" + name + ".wav";
+    name = "../data/audio/" + name + ".ogg";
     this->SoundEngine->play2D(name.c_str(), loop);
+}
+
+void ResourceMan::delSoundEngine() {
+    this->SoundEngine->drop();
+
 }
 
 ResourceMan* ResourceMan::getInstance() {
@@ -58,12 +67,11 @@ Shape& ResourceMan::getShape(std::string name,
     return *shapes[name];
 }
 Vehicle& ResourceMan::getVehicle(std::string name,
-                                 V_COLOR vehicle,
                                  float x,
                                  float y,
-                                 float angle) {
+                                 float angle,int id) {
     if (vehicles.find(name) == vehicles.end()) {
-        vehicles[name] = new Vehicle(name, vehicle, x, y, angle);
+        vehicles[name] = new Vehicle(name, x, y, angle, id);
     }
     return *vehicles[name];
 }
@@ -157,6 +165,24 @@ std::map<std::string, Obstacle*>& ResourceMan::getObstacles() {
     return obstacles;
 }
 
+std::map<int, Player*>& ResourceMan::getPlayers() {
+    return players;
+}
+
+Player& ResourceMan::getPlayer(int id,std::string name, int highscore,V_COLOR color) {
+    if (players.find(id) == players.end()) {
+        players[id] = new Player(id, name, highscore ,color);
+    }
+    return *players[id];
+}
+
+Player& ResourceMan::getPlayer(int id) {
+    if (players.find(id) == players.end()) {
+        std::cout << "Player " << id << " not found." << std::endl;
+    }
+    return *players[id];
+}
+
 ResourceMan::~ResourceMan() {
     for (auto& i : textures) {
         delete i.second;
@@ -179,6 +205,10 @@ ResourceMan::~ResourceMan() {
     for (auto& i : obstacles) {
         delete i.second;
     }
+    for (auto& i : players) {
+        delete i.second;
+    }
+
     textures.clear();
     shaders.clear();
     shapes.clear();
@@ -186,4 +216,5 @@ ResourceMan::~ResourceMan() {
     bullets.clear();
     maps.clear();
     obstacles.clear();
+    players.clear();
 }

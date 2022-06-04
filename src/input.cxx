@@ -13,8 +13,9 @@ void processInput(GLFWwindow* window) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     Vehicle& p1 = resourceMan->getVehicle("v1");
     Vehicle& p2 = resourceMan->getVehicle("v2");
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         p1.move(0.0, 1.0, 0.0);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)

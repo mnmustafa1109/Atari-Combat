@@ -13,6 +13,7 @@
 #include "../include/input.hxx"
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/movement.hxx"
+#include "../include/player.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
@@ -21,12 +22,7 @@
 
 Vehicle::Vehicle() {}
 
-Vehicle::Vehicle(std::string name,
-                 V_COLOR color,
-                 float x,
-                 float y,
-                 float angle) {
-    this->color = color;
+Vehicle::Vehicle(std::string name, float x, float y, float angle, int id) {
     this->bullet_count = 0;
     this->speed = 0.01f;
     this->health = 100.0;
@@ -35,7 +31,8 @@ Vehicle::Vehicle(std::string name,
     this->hit = false;
     this->attack = 10.0f;
     ResourceMan* resourceMan = ResourceMan::getInstance();
-
+    player = &resourceMan->getPlayer(id);
+    this->color = this->player->getColor();
     Shader& rectshader = resourceMan->getShader("rectshader");
 
     if (color == RED) {
@@ -67,8 +64,6 @@ void Vehicle::move(float x, float y, float rotation) {
 
     float tempx = this->x;
     float tempy = this->y;
-    float tempa = this->angle;
-    bool collision = false;
     this->x -= y * speed * sin(glm::radians(this->angle));
     this->y += y * speed * cos(glm::radians(this->angle));
     this->angle += rotation;
@@ -78,18 +73,48 @@ void Vehicle::move(float x, float y, float rotation) {
             if (isColliding(vehicle.second)) {
                 this->x = tempx;
                 this->y = tempy;
-                this->angle = tempa;
-                collision = true;
             }
         }
     }
 
-    for (auto& vehicle : obstacles) {
-        if (isColliding(vehicle.second)) {
-            this->x = tempx;
-            this->y = tempy;
-            this->angle = tempa;
-            collision = true;
+    for (auto& obstacle : obstacles) {
+        if (isColliding(obstacle.second)) {
+            // this->y = tempy;
+            if ((tempy < ((obstacle.second->getY() +
+                           obstacle.second->getHeight() / 2))) &&
+                (tempy > ((obstacle.second->getY() -
+                           obstacle.second->getHeight() / 2)))) {
+                // this->x = tempx;
+                if ((tempx > ((obstacle.second->getX() +
+                               obstacle.second->getWidth() / 2)))) {
+                    this->x = obstacle.second->getX() +
+                              obstacle.second->getWidth() / 2 +
+                              this->getWidth() / 2;
+                }
+                if ((tempx < ((obstacle.second->getX() -
+                               obstacle.second->getWidth() / 2)))) {
+                    this->x = obstacle.second->getX() -
+                              obstacle.second->getWidth() / 2 -
+                              this->getWidth() / 2;
+                }
+            }
+            if ((tempx < ((obstacle.second->getX() +
+                           obstacle.second->getWidth() / 2))) &&
+                (tempx > ((obstacle.second->getX() -
+                           obstacle.second->getWidth() / 2)))) {
+                if ((tempy > ((obstacle.second->getY() +
+                               obstacle.second->getHeight() / 2)))) {
+                    this->y = obstacle.second->getY() +
+                              obstacle.second->getHeight() / 2 +
+                              this->getHeight() / 2;
+                }
+                if ((tempy < ((obstacle.second->getY() -
+                               obstacle.second->getHeight() / 2)))) {
+                    this->y = obstacle.second->getY() -
+                              obstacle.second->getHeight() / 2 -
+                              this->getHeight() / 2;
+                }
+            }
         }
     }
 
@@ -136,7 +161,7 @@ void Vehicle::shoot() {
     std::chrono::duration<double> elapsed_seconds;
     end = std::chrono::system_clock::now();
     elapsed_seconds = end - last_shoot;
-    if (elapsed_seconds.count() > 0.3) {
+    if (elapsed_seconds.count() > 0.1) {
         resourceMan->playSound("shot");
         if (bullet_count > 20) {
             return;
@@ -192,4 +217,8 @@ bool Vehicle::get_hit() {
 
 void Vehicle::set_hit(bool x) {
     hit = x;
+}
+
+Player* Vehicle::get_player() {
+    return player;
 }

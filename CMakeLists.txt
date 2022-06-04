@@ -25,6 +25,7 @@ include/stb_image.h
     include/map.hxx
     include/game.hxx
     include/main.hxx
+    include/player.hxx
 )
 
 set(MY_SOURCE_FILES
@@ -43,6 +44,7 @@ set(MY_SOURCE_FILES
     src/obstacle.cxx
     src/game.cxx
     src/main.cxx 
+    src/player.cxx
 )
 
 

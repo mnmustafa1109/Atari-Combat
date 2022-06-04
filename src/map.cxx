@@ -88,12 +88,12 @@ Map::Map(M_TYPE type) {
     std::vector<float> ys = {0.8, -0.8};
     x = uuid::gen_random_i(0, 1);
     y = uuid::gen_random_i(0, 1);
-    resourceMan->getVehicle("v1", BLUE, xs[x], ys[y],
-                            uuid::gen_random_f(0.0f, 360.0f));
+    resourceMan->getVehicle("v1", xs[x], ys[y],
+                            uuid::gen_random_f(0.0f, 360.0f), 0);
     xs.erase(xs.begin() + x);
     ys.erase(ys.begin() + y);
-    resourceMan->getVehicle("v2", RED, xs[0], ys[0],
-                            uuid::gen_random_f(0.0f, 360.0f));
+    resourceMan->getVehicle("v2" ,xs[0], ys[0], uuid::gen_random_f(0.0f, 360.0f),
+                            1);
     xs.clear();
     ys.clear();
     std::cout << "Map vehicles created" << std::endl;
