@@ -50,6 +50,23 @@ M_TYPE uuid::getRandomMapType() {
     return FOREST;
 }
 
+P_TYPE uuid::getRandomPowerUpType() {
+    int random = gen_random_i(0, 3);
+    switch (random) {
+        case 0:
+            return HEALTH;
+        case 1:
+            return SPEED;
+        case 2:
+            return SHIELD;
+        case 3:
+            return ATTACK;
+        default:
+            return HEALTH;
+    }
+    return HEALTH;
+}
+
 std::string uuid::generate_uuid_v4() {
     std::stringstream ss;
     int i;

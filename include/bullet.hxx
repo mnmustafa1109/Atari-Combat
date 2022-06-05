@@ -23,7 +23,7 @@ enum B_TYPE:short {
 class Bullet:public Shape {
     B_TYPE type;
     float speed ;
-    float health;
+    float damage;
     Vehicle* vehicle;
     int hit_no;
     std::chrono::time_point<std::chrono::system_clock> start;

@@ -1,10 +1,12 @@
 #include "../include/resourceman.hxx"
+#include <algorithm>
 #include <string>
 #include "../include/bullet.hxx"
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
 #include "../include/player.hxx"
+#include "../include/powerups.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
@@ -57,6 +59,10 @@ ResourceMan* ResourceMan::getInstance() {
     return instance;
 }
 
+// add the texture to the map if it doesn't exist
+// or else return the existing texture
+// first the texture name then the path name and in last if you want it fliped
+// vertically
 Texture& ResourceMan::getTexture(std::string name,
                                  std::string path,
                                  bool flip) {
@@ -66,6 +72,9 @@ Texture& ResourceMan::getTexture(std::string name,
     return *textures[name];
 }
 
+// add the shader to the map if it doesn't exist
+// or else return the existing shader
+// first the shader name then the vertex and fragment shader path
 Shader& ResourceMan::getShader(std::string name,
                                std::string vertexPath,
                                std::string fragmentPath) {
@@ -74,6 +83,12 @@ Shader& ResourceMan::getShader(std::string name,
     }
     return *shaders[name];
 }
+
+// add the shape to the map if it doesn't exist
+// or else return the existing shape
+// first the shape name then the shape type
+// its axis width rotation and position
+//  and which shader to use along the texture
 Shape& ResourceMan::getShape(std::string name,
                              SHAPE shape,
                              float x,
@@ -229,6 +244,57 @@ Player& ResourceMan::getPlayer(int id) {
     return *players[id];
 }
 
+PowerUps& ResourceMan::getPowerup(std::string name) {
+    if (powerups.find(name) == powerups.end()) {
+        std::cout << "Powerup " << name << " not found." << std::endl;
+    }
+    return *powerups[name];
+}
+
+void ResourceMan::initPowerpose() {
+    powerpos.push_back({0.0, 0.0});
+    powerpos.push_back({0.0, 0.8});
+    powerpos.push_back({0.9, 0.0});
+    powerpos.push_back({-0.9, 0.0});
+    powerpos.push_back({0.0, -0.8});
+    powerpos.push_back({0.8, 0.8});
+    powerpos.push_back({-0.8, 0.8});
+    powerpos.push_back({0.8, -0.8});
+    powerpos.push_back({-0.8, -0.8});
+    powerpos.push_back({0.9, 0.7});
+    powerpos.push_back({-0.9, 0.7});
+    powerpos.push_back({0.9, -0.7});
+    powerpos.push_back({-0.9, -0.7});
+    powerpos.push_back({0.0, 0.6});
+    powerpos.push_back({0.0, -0.6});
+    powerpos.push_back({0.6, 0.0});
+    powerpos.push_back({-0.6, 0.0});
+}
+
+
+
+std::vector<pos>& ResourceMan::getPowerpose() {
+    return powerpos;
+}
+
+PowerUps& ResourceMan::getPowerup() {
+    std::string p_name = uuid::generate_uuid_v4();
+    while (1) {
+        if (powerups.find(p_name) == powerups.end()) {
+            playSound("appear");
+            powerups[p_name] = new PowerUps(p_name);
+            std::cout << "Powerup " << p_name << " created." << std::endl;
+            return *powerups[p_name];
+        }
+        p_name = uuid::generate_uuid_v4();
+    }
+}
+
+std::map<std::string, PowerUps*>& ResourceMan::getPowerups() {
+    return powerups;
+}
+
+// destructor to delete all the resources from the maps and clearing the map
 ResourceMan::~ResourceMan() {
     for (auto& i : textures) {
         delete i.second;

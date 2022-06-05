@@ -57,6 +57,7 @@ class Shape {
     float getWidth();
     float getHeight();
     float getAngle();
+    void init_pose();
 };
 
 #endif  // !SHAPE_HXX

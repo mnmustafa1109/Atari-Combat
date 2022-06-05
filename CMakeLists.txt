@@ -28,6 +28,7 @@ include/font.hxx
     include/game.hxx
     include/main.hxx
     include/player.hxx
+    include/powerups.hxx
 )
 
 set(MY_SOURCE_FILES
@@ -48,6 +49,7 @@ set(MY_SOURCE_FILES
     src/game.cxx
     src/main.cxx 
     src/player.cxx
+    src/powerups.cxx
 )
 
 

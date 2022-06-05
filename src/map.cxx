@@ -90,8 +90,8 @@ Map::Map(M_TYPE type) {
     std::cout << "Map houses created" << std::endl;
     std::vector<float> xs = {1.1, -1.1};
     std::vector<float> ys = {0.8, -0.8};
-    x = uuid::gen_random_i(0, 1);
-    y = uuid::gen_random_i(0, 1);
+    x = uuid::gen_random_i(0, 20) % 2;
+    y = uuid::gen_random_i(0, 20) % 2;
     resourceMan->getVehicle("v1", xs[x], ys[y],
                             uuid::gen_random_f(0.0f, 360.0f), 0);
     xs.erase(xs.begin() + x);
@@ -119,18 +119,29 @@ void Map::draw_objects(bool is_game_over) {
     std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
     std::map<std::string, Bullet*>& bullets = resourceMan->getBullets();
 
+    // draw vehicles
     for (auto& vehicle : vehicles) {
         vehicle.second->draw();
     }
+    // Draw obstacles
     for (auto& obstacle : obstacles) {
         obstacle.second->draw();
     }
+    // Draw bullets
     for (auto& bullet : bullets) {
         if (bullet.second->getRender() && bullet.second != NULL) {
             bullet.second->draw();
         }
     }
+    // draw powerups
+    for (auto& powerup : resourceMan->getPowerups()) {
+        if (powerup.second->getRender() && powerup.second != NULL) {
+            powerup.second->draw();
+        }
+    }
+    // draw border
     border->draw();
+    // drawing hearts of the players on top
     for (auto& vehicle : vehicles) {
         int health = (vehicle.second->get_health()) / 10;
         for (int i = 0; i < health; i++) {
@@ -147,9 +158,33 @@ void Map::draw_objects(bool is_game_over) {
         } else {
             heart2->move(health * (0.3), 0.0, 0.0, 0.0, 0.0);
         }
+        std::vector<PowerUps*>& powerups = vehicle.second->get_powerups();
+        int v1, v2;
+        v1 = v2 = 1;
+        for (int i = 0; i < powerups.size(); i++) {
+            if (powerups[i]->get_active()) {
+                if (powerups[i]->get_p_name() == "SHIELD" ||
+                    powerups[i]->get_p_name() == "SPEED" ||
+                    powerups[i]->get_p_name() == "ATTACK") {
+                    powerups[i]->init_pose();
+                    if (vehicle.second->get_name() == "v1") {
+                        v1++;
+                        powerups[i]->Shape::move((v1 * 0.1) - 1.59, -1.01, 0.0,
+                                                 0.0, 0.0);
+                        powerups[i]->Shape::draw();
+                    } else {
+                        v2++;
+                        powerups[i]->Shape::move(-(v2 * 0.1) + 1.59, -1.01, 0.0,
+                                                 0.0, 0.0);
+                        powerups[i]->Shape::draw();
+                    }
+                }
+            }
+        }
     }
+
+    // drawing game over screen
     if (is_game_over) {
         overlay->draw();
     }
-    
 }

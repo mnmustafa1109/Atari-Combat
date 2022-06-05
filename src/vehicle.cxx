@@ -30,6 +30,7 @@ Vehicle::Vehicle(std::string name, float x, float y, float angle, int id) {
     this->destroyed = false;
     this->hit = false;
     this->attack = 10.0f;
+    this->shield = 0;
     ResourceMan* resourceMan = ResourceMan::getInstance();
     player = &resourceMan->getPlayer(id);
     this->color = this->player->getColor();
@@ -55,12 +56,17 @@ Vehicle::Vehicle(std::string name, float x, float y, float angle, int id) {
     Shape::move(x, y, 0.0, angle, 0.0);
 }
 
+std::vector<PowerUps*>& Vehicle::get_powerups() {
+    return powerups;
+}
+
 void Vehicle::move(float x, float y, float rotation) {
     // add using trignometric rule
 
     ResourceMan* resourceMan = ResourceMan::getInstance();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
     std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
+    std::map<std::string, PowerUps*>& powerups = resourceMan->getPowerups();
 
     float tempx = this->x;
     float tempy = this->y;
@@ -73,6 +79,29 @@ void Vehicle::move(float x, float y, float rotation) {
             if (isColliding(vehicle.second)) {
                 this->x = tempx;
                 this->y = tempy;
+            }
+        }
+    }
+
+    for (auto& powerup : powerups) {
+        if (powerup.second->getRender()) {
+            if (isColliding(powerup.second)) {
+                resourceMan->playSound("pick");
+                this->powerups.push_back(powerup.second);
+                std::cout << powerup.second->get_p_name() << " picked up by "
+                          << this->player->getName() << std::endl;
+                if (powerup.second->get_p_name() == "HEALTH") {
+                    if (this->health < 100.0) {
+                        this->health += 10.0;
+                    }
+                } else if (powerup.second->get_p_name() == "SPEED") {
+                    this->speed *= 1.3;
+                } else if (powerup.second->get_p_name() == "SHIELD") {
+                    this->shield ++;
+                } else if (powerup.second->get_p_name() == "ATTACK") {
+                    this->attack += 10.0;
+                }
+                powerup.second->set_active(true, this);
             }
         }
     }
@@ -153,6 +182,14 @@ void Vehicle::draw() {
     }
 }
 
+void Vehicle::set_speed(float speed) {
+    this->speed = speed;
+}
+
+float Vehicle::get_speed() {
+    return this->speed;
+}
+
 void Vehicle::shoot() {
     ResourceMan* resourceMan = ResourceMan::getInstance();
 
@@ -160,7 +197,7 @@ void Vehicle::shoot() {
     std::chrono::duration<double> elapsed_seconds;
     end = std::chrono::system_clock::now();
     elapsed_seconds = end - last_shoot;
-    if (elapsed_seconds.count() > 0.13) {
+    if (elapsed_seconds.count() > 0.16) {
         resourceMan->playSound("shot");
         if (bullet_count > 20) {
             return;
@@ -206,6 +243,10 @@ float Vehicle::get_attack() {
     return attack;
 }
 
+void Vehicle::set_attack(float attack) {
+    this->attack = attack;
+}
+
 std::string Vehicle::get_name() {
     return name;
 }
@@ -220,6 +261,14 @@ void Vehicle::set_hit(bool x) {
 
 Player* Vehicle::get_player() {
     return player;
+}
+
+void Vehicle::set_sheild(int x) {
+    shield = x;
+}
+
+int Vehicle::get_sheild() {
+    return shield;
 }
 
 std::string Vehicle::get_h_color() {
@@ -243,6 +292,8 @@ std::string Vehicle::get_t_color() {
     }
     return "";
 }
+
+
 
 V_COLOR Vehicle::get_color() {
     return color;

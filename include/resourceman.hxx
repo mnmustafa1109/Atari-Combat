@@ -8,6 +8,7 @@
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
 #include "../include/player.hxx"
+#include "../include/powerups.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
@@ -17,8 +18,13 @@ class Vehicle;
 class Bullet;
 class Player;
 class Font;
+class PowerUps;
 enum B_TYPE : short;
 enum V_COLOR : short;
+struct pos {
+    float x;
+    float y;
+};
 
 class ResourceMan {
    public:
@@ -56,11 +62,15 @@ class ResourceMan {
                           float scale);
     Player& getPlayer(int id, std::string name, int highscore, V_COLOR color);
     Player& getPlayer(int id);
+    PowerUps& getPowerup();
+    PowerUps& getPowerup(std::string name);
     Font& getFont(std::string name, std::string path);
     Font& getFont(std::string name);
     std::map<std::string, Vehicle*>& getVehicles();
     std::map<std::string, Bullet*>& getBullets();
     std::map<std::string, Obstacle*>& getObstacles();
+    std::map<std::string, PowerUps*>& getPowerups();
+
     std::map<int, Player*>& getPlayers();
     std::map<std::string, Font*>& getFonts();
     Map& getMap(std::string name, M_TYPE type);
@@ -71,6 +81,8 @@ class ResourceMan {
     void addSound(std::string name);
     void updateSound();
     void setInitSoundEngine();
+    void initPowerpose();
+    std::vector<pos>& getPowerpose();
     ~ResourceMan();
 
    private:
@@ -86,6 +98,8 @@ class ResourceMan {
     std::map<int, Player*> players;
     std::map<std::string, irrklang::ISoundSource*> sounds;
     std::map<std::string, Font*> fonts;
+    std::map<std::string, PowerUps*> powerups;
+    std::vector<pos> powerpos;
 };
 
 #endif  // !RESOURCEMAN_HXX

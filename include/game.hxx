@@ -7,6 +7,7 @@
 #include "../include/font.hxx"
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
+#include "../include/powerups.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/vehicle.hxx"
 
@@ -14,6 +15,7 @@ class Vehicle;
 class Bullet;
 class ResourceMan;
 class Map;
+class PowerUps;
 
 class Game {
     GLFWwindow* window;
@@ -22,6 +24,8 @@ class Game {
     std::map<std::string, Bullet*>& bullets;
     std::map<std::string, Vehicle*>& vehicles;
     std::map<int, Player*>& players;
+    std::map<std::string, PowerUps*>& powerups;
+    void menu(int i);
     Map* map;
     int level;
     Game();

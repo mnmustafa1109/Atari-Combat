@@ -18,7 +18,7 @@ Bullet::Bullet() {}
 Bullet::Bullet(std::string name, B_TYPE type, float x, float y, float angle) {
     this->type = type;
     this->speed = 0.027f;
-    this->health = 100.0;
+    this->damage = 10.0;
     this->name = name;
     this->render = true;
     this->hit_no = 0;
@@ -97,31 +97,37 @@ int Bullet::move() {
     }
     if (this->getRender() == true) {
         for (auto vehicle : vehicles) {
-            if (elapsed_seconds.count() <= 0.140 &&
+            if (elapsed_seconds.count() <= 0.12 &&
                 vehicle.second->get_name() == this->vehicle->get_name()) {
             } else if (isColliding(vehicle.second)) {
                 this->render = false;
                 this->vehicle->dec_bullet();
-                vehicle.second->dec_health(this->vehicle->get_attack());
-                std::cout << "Player "
-                          << vehicle.second->get_player()->getName()
-                          << " Health :" << vehicle.second->get_health()
-                          << std::endl;
-                colision = true;
-                resourceMan->playSound("destroy");
-                vehicle.second->set_hit(true);
-                vehicle.second->start_last_hit();
-                this->vehicle->get_player()->setScore(10);
-                vehicle.second->get_player()->setScore(-10);
-                std::cout << "Player "
-                          << vehicle.second->get_player()->getName()
-                          << " Score :"
-                          << vehicle.second->get_player()->getScore()
-                          << std::endl;
+                if (vehicle.second->get_sheild() > 0) {
+                    resourceMan->playSound("dissapear");
+
+                } else {
+                    vehicle.second->dec_health(this->damage);
+                    std::cout << "Player "
+                              << vehicle.second->get_player()->getName()
+                              << " Health :" << vehicle.second->get_health()
+                              << std::endl;
+                    colision = true;
+                    resourceMan->playSound("destroy");
+                    vehicle.second->set_hit(true);
+                    vehicle.second->start_last_hit();
+                    this->vehicle->get_player()->setScore(10);
+                    vehicle.second->get_player()->setScore(-10);
+                    std::cout << "Player "
+                              << vehicle.second->get_player()->getName()
+                              << " Score :"
+                              << vehicle.second->get_player()->getScore()
+                              << std::endl;
+                }
                 return 1;
             }
         }
     }
+
     if (colision == true) {
         hit_no++;
         this->x = tempx;
@@ -179,6 +185,7 @@ void Bullet::shoot(float x, float y, float angle, Vehicle* vehicle) {
     this->z = z;
     this->angle = angle;
     this->vehicle = vehicle;
+    this->damage= vehicle->get_attack();
 }
 
 bool Bullet::getRender() {

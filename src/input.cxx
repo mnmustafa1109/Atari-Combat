@@ -35,6 +35,7 @@ void processInput(GLFWwindow* window, Game* game) {
         p2.move(0.00, 0.00, -3.0);
     if (game->get_game_over()) {
         if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+            resourceMan->playSound("enter");
             game->level_load();
         }
     }

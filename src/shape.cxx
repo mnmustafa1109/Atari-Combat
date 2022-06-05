@@ -131,6 +131,14 @@ void Shape::move(float x, float y, float z, float angle, float scale) {
     }
 }
 
+void Shape::init_pose() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 1;
+    this->scale=0.9;
+    this->angle = 0;
+}
+
 float Shape::getX() {
     return this->x;
 }
