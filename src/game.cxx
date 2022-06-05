@@ -11,26 +11,23 @@
 #include <string>
 #include <vector>
 
-#include "../include/bullet.hxx"
 #include "../include/game.hxx"
 #include "../include/input.hxx"
-#include "../include/irrKlang/irrKlang.h"
 #include "../include/main.hxx"
 #include "../include/map.hxx"
 #include "../include/movement.hxx"
 #include "../include/player.hxx"
 #include "../include/resourceman.hxx"
-#include "../include/shader.hxx"
-#include "../include/shape.hxx"
-#include "../include/texture.hxx"
 #include "../include/uuid.hxx"
 #include "../include/vehicle.hxx"
 
 Movement* Movement::instance = nullptr;
 ResourceMan* ResourceMan::instance = nullptr;
 
+// forward declaration
 class Map;
 
+// pass a string and check if every character is a digit
 bool check_digit(std::string number) {
     // parse through every character of the string
     for (int i = 0; i < number.length(); i++) {
@@ -41,6 +38,8 @@ bool check_digit(std::string number) {
     return true;
 }
 
+// pass one max and one min and ask number and make sure it is between them by
+// asserting dominance
 int ask_in_range(int min, int max) {
     int input;
     std::string number;
@@ -61,6 +60,7 @@ int ask_in_range(int min, int max) {
     return input;
 }
 
+// pass and integer and return the corresponding v color enum type
 V_COLOR get_type(int i) {
     switch (i) {
         case 1:
@@ -76,6 +76,7 @@ V_COLOR get_type(int i) {
     return RED;
 }
 
+// pass the player id and ask its personal information
 void Game::menu(int i) {
     std::string player_name = "Player";
     std::cout << "Enter Player Name: ";
@@ -120,11 +121,17 @@ Game::Game(GLFWwindow* window)
     resourceMan->initPowerpose();
     bullets = resourceMan->getBullets();
     vehicles = resourceMan->getVehicles();
+    players = resourceMan->getPlayers();
+    powerups = resourceMan->getPowerups();
+
+    // asking both user its perosnaal information
     menu(0);
     menu(1);
+    // starting the game
     this->game();
 }
 
+// render the game and its corresponding element
 void Game::render() {
     // save the font in m for later use
     Font* m = &(resourceMan->getFont("main"));
@@ -155,7 +162,7 @@ void Game::render() {
                                   0.0015f, glm::vec3(1.0f, 1.0f, 1.0f));
                 } else {
                     m->RenderText(players[1]->getName() + " Wins", -0.6f, -0.1f,
-                                  0.00015f, glm::vec3(1.0f, 1.0f, 1.0f));
+                                  0.0015f, glm::vec3(1.0f, 1.0f, 1.0f));
                 }
                 m->RenderText("Press Enter to quite", -0.6f, -0.2f, 0.0005f,
                               glm::vec3(1.0f, 1.0f, 1.0f));
@@ -314,11 +321,16 @@ void Game::game_logic() {
                 break;
             }
         }
+        // loop though all powerups
         for (auto& powerup : powerups) {
+            // check if any power up needs to be dissapear
             if (powerup.second->getRender() && powerup.second != NULL) {
                 powerup.second->check_time();
+                // check if any power up is active and need to be removed
             } else if (powerup.second->get_active()) {
                 powerup.second->check_pick();
+                // if power up have been use wipe it out from the face of this
+                // universe
             } else if (!powerup.second->getRender() && powerup.second != NULL &&
                        !powerup.second->get_active()) {
                 delete powerup.second;
@@ -326,9 +338,10 @@ void Game::game_logic() {
                 break;
             }
         }
+        // 1 in 300 chance of spawning a power up every frame
         int i = uuid::gen_random_i(0, 300);
         if (i == 1) {
-            
+            // geenrate a random power up
             resourceMan->getPowerup();
         }
     }

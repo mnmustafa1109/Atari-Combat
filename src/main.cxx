@@ -43,6 +43,7 @@ int main() {
     std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes
               << std::endl;
 
+    // enabling features and setting of opengl states
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetKeyCallback(window, key_callback);

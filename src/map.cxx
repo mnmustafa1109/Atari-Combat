@@ -11,8 +11,10 @@
 #include "../include/texture.hxx"
 #include "../include/uuid.hxx"
 
+// dont call it if you want to render the map and avoid segmentation faults
 Map::Map(){};
 
+// pass a map type and return it in string format
 std::string map_name(M_TYPE type) {
     switch (type) {
         case DESERT:
@@ -26,10 +28,12 @@ std::string map_name(M_TYPE type) {
     }
 }
 
+// pass the map type and initialize the map
 Map::Map(M_TYPE type) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     float x = 2.67f;
     float y = 2.67f;
+    // load the border and the map overlay for game pauses
     border =
         &(resourceMan->getShape("border", RECTANGLE, -0.02f, 0.0f, 1.0f, 2.88f,
                                 2.16f, 0.0f, &resourceMan->getTexture("border"),
@@ -39,6 +43,7 @@ Map::Map(M_TYPE type) {
                                       &resourceMan->getTexture("overlay"),
                                       &resourceMan->getShader("rectshader")));
     Shader& rectshader = resourceMan->getShader("rectshader");
+    // load the corrsponding shader for the map
     if (type == DESERT) {
         Texture& desert = resourceMan->getTexture("desert");
         create(RECTANGLE, 0.0, 0.0, 1.0, x, y, 0.0, &desert, &rectshader);
@@ -51,6 +56,9 @@ Map::Map(M_TYPE type) {
     }
     std::cout << "Map background and border created" << std::endl;
     float angle, scale;
+    // generate one to four random houses for the map
+    // also randomly generate the position of the houses
+    // and its size
     bool isHouse = uuid::gen_random_i(0, 1);
     if (isHouse) {
         x = uuid::gen_random_f(0.2f, 0.5f);
@@ -88,6 +96,7 @@ Map::Map(M_TYPE type) {
                                  scale);
     }
     std::cout << "Map houses created" << std::endl;
+    // move the vehicles to their initialized position
     std::vector<float> xs = {1.1, -1.1};
     std::vector<float> ys = {0.8, -0.8};
     x = uuid::gen_random_i(0, 20) % 2;
@@ -102,6 +111,7 @@ Map::Map(M_TYPE type) {
     ys.clear();
     std::cout << "Map vehicles created" << std::endl;
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
+    // initialize the heart with the corrsponding color of the vehicle
     heart1 = &(resourceMan->getShape(
         "heart1", RECTANGLE, -1.91f, 1.37f, 0.0f, 0.32022f, 0.30024f, 0.0f,
         &resourceMan->getTexture(vehicles["v1"]->get_h_color()),
@@ -153,26 +163,32 @@ void Map::draw_objects(bool is_game_over) {
                 heart2->draw();
             }
         }
+        // reset the heart position "buffer"
         if (vehicle.second->get_name() == "v1") {
             heart1->move(health * (-0.3), 0.0, 0.0, 0.0, 0.0);
         } else {
             heart2->move(health * (0.3), 0.0, 0.0, 0.0, 0.0);
         }
+        /// load all powerups of the current player
         std::vector<PowerUps*>& powerups = vehicle.second->get_powerups();
         int v1, v2;
         v1 = v2 = 1;
+        // draw powerups
         for (int i = 0; i < powerups.size(); i++) {
             if (powerups[i]->get_active()) {
+                // dont draw health ++ powerup
                 if (powerups[i]->get_p_name() == "SHIELD" ||
                     powerups[i]->get_p_name() == "SPEED" ||
                     powerups[i]->get_p_name() == "ATTACK") {
                     powerups[i]->init_pose();
+                    // if its the first powerup of the player 1
                     if (vehicle.second->get_name() == "v1") {
                         v1++;
                         powerups[i]->Shape::move((v1 * 0.1) - 1.59, -1.01, 0.0,
                                                  0.0, 0.0);
                         powerups[i]->Shape::draw();
                     } else {
+                        // if its the first powerup of the player 2
                         v2++;
                         powerups[i]->Shape::move(-(v2 * 0.1) + 1.59, -1.01, 0.0,
                                                  0.0, 0.0);

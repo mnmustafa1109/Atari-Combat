@@ -1,17 +1,15 @@
 #ifndef MAP_HXX
 #define MAP_HXX
 // include vectors
-#include <vector>
-#include "../include/shader.hxx"
 #include "../include/shape.hxx"
-#include "../include/texture.hxx"
-#include "../include/obstacle.hxx"
 
-
+// mAP types
 enum M_TYPE { DESERT, SNOWY, FOREST };
 
+// function that take a type and convert it to string
 std::string map_name(M_TYPE type);
 
+// map class
 class Map : public Shape {
     M_TYPE type;
     Shape* border;

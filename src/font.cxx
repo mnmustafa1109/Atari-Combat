@@ -9,13 +9,18 @@
 #include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
 
+// DOnt call this function directly i said DO NOT
 Font::Font(){};
 
+// pass the name of the font and the contructor will init and render all the
+// glyphs in it
 Font::Font(std::string name) {
     this->FontInit(name);
     this->FontSetup();
 }
 
+// pass the string text , axis of positon , its scale  color and if you want to
+// print it with some padding i mean like setw wala alternative
 void Font::RenderText(std::string text,
                       GLfloat x,
                       GLfloat y,
@@ -30,11 +35,12 @@ void Font::RenderText(std::string text,
     shader->setv3f("textColor", color[0], color[1], color[2]);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(va_font);
-
+    // to iterate through the string
     std::string::const_iterator c, e;
-
+    // if reverse is false then print the string from left to right
     if (reverse == false) {
         for (c = text.begin(), e = text.end(); c != e; ++c) {
+            // get the glyphs of that characters
             Character ch = Characters[*c];
 
             GLfloat xpos = x + ch.Bearing.x * scale;
@@ -70,9 +76,11 @@ void Font::RenderText(std::string text,
     } else {
         // reverse the string
         std::string rev_text = text;
+        // reverse the string
         std::reverse(rev_text.begin(), rev_text.end());
-
+        // print the string from right to left
         for (c = rev_text.begin(), e = rev_text.end(); c != e; ++c) {
+            // get the glyphs of the characters
             Character ch = Characters[*c];
 
             GLfloat xpos = x - ch.Bearing.x * scale;
@@ -110,9 +118,11 @@ void Font::RenderText(std::string text,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+// pass the name of the font and the and it will find the font file and load it
 void Font::FontInit(std::string name) {
     // Compile and setup the shader
     ResourceMan* resman = ResourceMan::getInstance();
+    // projection matrix and the shader
     shader = &resman->getShader("textshader");
     glm::mat4 projection = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
@@ -124,15 +134,17 @@ void Font::FontInit(std::string name) {
                        GL_FALSE, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shader->ID, "view1"), 1, GL_FALSE,
                        glm::value_ptr(view));
-
+    // Load the freetype library
     if (FT_Init_FreeType(&ft)) {
         std::cout << "ERROR::FREETYPE: Could not init FreeType Library"
                   << std::endl;
     }
     std::string f_name = "../data/fonts/" + name;
+    // Load font as face from the file
     if (FT_New_Face(ft, f_name.c_str(), 0, &face)) {
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
     }
+    // render quality of the font
     FT_Set_Pixel_Sizes(face, 0, 96);
     printf("FreeType Initialization successfull\n");
 

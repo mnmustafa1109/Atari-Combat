@@ -1,17 +1,14 @@
 #include "../include/player.hxx"
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <iostream>
-#include "../include/map.hxx"
-#include "../include/movement.hxx"
-#include "../include/resourceman.hxx"
+
 #include "../include/shader.hxx"
 #include "../include/vehicle.hxx"
 
-
 Player::Player() {}
 
-Player::Player(int id, std::string name, int highscore,V_COLOR color) {
+// pass the id of the player along with its name highscore and the the color
+Player::Player(int id, std::string name, int highscore, V_COLOR color) {
     this->id = id;
     this->name = name;
     this->highscore = highscore;
@@ -19,6 +16,8 @@ Player::Player(int id, std::string name, int highscore,V_COLOR color) {
     this->loss = 0;
     this->color = color;
 }
+
+// gettersand setters
 
 V_COLOR Player::getColor() {
     return this->color;

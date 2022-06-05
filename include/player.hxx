@@ -1,16 +1,14 @@
 #ifndef PLAYER_HXX
 #define PLAYER_HXX
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <iostream>
-#include "../include/map.hxx"
-#include "../include/movement.hxx"
-#include "../include/resourceman.hxx"
-#include "../include/shader.hxx"
 #include "../include/vehicle.hxx"
 
+// forward declaration
 enum V_COLOR : short;
 
+
+// Player class
 class Player {
     int id;
     std::string name;

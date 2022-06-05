@@ -14,6 +14,7 @@
 #include "../include/texture.hxx"
 #include "../include/vehicle.hxx"
 
+// forward declaration
 class Vehicle;
 class Bullet;
 class Player;
@@ -21,11 +22,14 @@ class Font;
 class PowerUps;
 enum B_TYPE : short;
 enum V_COLOR : short;
+
+// poisiton to store the postion of the power ups
 struct pos {
     float x;
     float y;
 };
 
+// Resource manager class
 class ResourceMan {
    public:
     Texture& getTexture(std::string name, std::string path, bool flip);

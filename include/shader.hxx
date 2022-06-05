@@ -1,11 +1,11 @@
 #ifndef SHADER_HXX
 #define SHADER_HXX
-#include <glad/glad.h>  // include glad to get the required OpenGL headers
 #include "../include/glm/glm.hpp"
 
 #include <iostream>
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
+
+
+// class for shader
 class Shader {
    public:
     // the program ID

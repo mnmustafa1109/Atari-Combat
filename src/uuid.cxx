@@ -5,17 +5,19 @@
 #include "../include/obstacle.hxx"
 using namespace uuid;
 
-// generating a random number depending on the range it gives
+// generating a random float depending on the range it gives
 float uuid::gen_random_f(float min, float max) {
     std::uniform_real_distribution<float> distr(min, max);
     return distr(gen);
 }
 
+// generating a random int depending on the range it gives
 int uuid::gen_random_i(int min, int max) {
     std::uniform_int_distribution<int> distr(min, max);
     return distr(gen);
 }
 
+// return you a random enum house type memeber
 H_TYPE uuid::getRandomHouseType() {
     int random = gen_random_i(0, 5);
     switch (random) {
@@ -35,6 +37,7 @@ H_TYPE uuid::getRandomHouseType() {
     return HOUSE1;
 }
 
+// return you a random enum map type memeber
 M_TYPE uuid::getRandomMapType() {
     int random = gen_random_i(0, 2);
     switch (random) {
@@ -50,6 +53,7 @@ M_TYPE uuid::getRandomMapType() {
     return FOREST;
 }
 
+// return you a random enum powerup type memeber
 P_TYPE uuid::getRandomPowerUpType() {
     int random = gen_random_i(0, 3);
     switch (random) {
@@ -67,6 +71,7 @@ P_TYPE uuid::getRandomPowerUpType() {
     return HEALTH;
 }
 
+// generate a unique uuid v v v long
 std::string uuid::generate_uuid_v4() {
     std::stringstream ss;
     int i;

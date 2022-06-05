@@ -2,22 +2,20 @@
 #define POWERUPS_HXX
 #include <chrono>
 #include <iostream>
-#include "../include/game.hxx"
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/movement.hxx"
+
 #include "../include/player.hxx"
-#include "../include/shader.hxx"
 #include "../include/shape.hxx"
-#include "../include/texture.hxx"
 #include "../include/vehicle.hxx"
 
+
+// power up types 
 enum P_TYPE : short { SHIELD, SPEED, ATTACK, HEALTH };
 
+// forward declaration
 class Player;
 class Vehicle;
 
+// power up class
 class PowerUps : public Shape {
     P_TYPE type;
     bool is_render;

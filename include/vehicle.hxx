@@ -3,21 +3,19 @@
 #include <chrono>
 #include <iostream>
 #include <vector>
-#include "../include/game.hxx"
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/movement.hxx"
-#include "../include/player.hxx"
-#include "../include/shader.hxx"
-#include "../include/shape.hxx"
-#include "../include/texture.hxx"
 
+#include "../include/player.hxx"
+#include "../include/shape.hxx"
+
+// enum of vehicle type
 enum V_COLOR : short { RED, GREEN, BLUE };
 
+// forward declaration
 class Player;
 class PowerUps;
 
+
+// vehicle class
 class Vehicle : public Shape {
     V_COLOR color;
     float speed;
@@ -27,6 +25,8 @@ class Vehicle : public Shape {
     bool destroyed;
     float attack;
     int shield;
+    // hit bool made to check if the vehicle is hit by bullet 
+    // so we can paint it red
     bool hit;
     std::chrono::time_point<std::chrono::system_clock> last_shoot;
     std::chrono::time_point<std::chrono::system_clock> last_hit;

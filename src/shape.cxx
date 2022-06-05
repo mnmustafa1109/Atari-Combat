@@ -7,10 +7,14 @@
 #include "../include/movement.hxx"
 #include "../include/shape.hxx"
 
-Shape::Shape() {
-    this->angle = 0.0f;
-}
+// do not use this function if you want to render the shapes and avoid
+// segmentation faults
+Shape::Shape() {}
 
+// initialize a shape pass it the x and y coordinates of the shape the widht and
+// height of the shape the angle and the shader and texture it needed to render
+// the shape also pass the type of the shape like for e.g if its a rectangle or
+// a circle
 Shape::Shape(SHAPE shape,
              float x,
              float y,
@@ -20,8 +24,14 @@ Shape::Shape(SHAPE shape,
              float angle,
              Texture* texture,
              Shader* shader) {
+    // call the create function using this approach for modularity
     create(shape, x, y, z, width, height, angle, texture, shader);
 }
+
+// create a shape pass it the x and y coordinates of the shape the widht and
+// height of the shape the angle and the shader and texture it needed to render
+// the shape also pass the type of the shape like for e.g if its a rectangle or
+// a circle
 void Shape::create(SHAPE shape,
                    float x,
                    float y,
@@ -39,6 +49,7 @@ void Shape::create(SHAPE shape,
     this->height = height;
     this->angle = angle;
     this->scale = 1.0f;
+    // if its a rectangle or a square
     if (shape == RECTANGLE || shape == SQUARE) {
         this->texture = texture;
         this->shader = shader;
@@ -50,10 +61,12 @@ void Shape::create(SHAPE shape,
             x - width / 2, y - height / 2, z, 0.0f, 0.0f,
             x + width / 2, y - height / 2, z, 1.0f, 0.0f,
         };
+        // order of vertices to render the triangle
         unsigned int indices[] = {
             0, 1, 2, 0, 2, 3,
         };
 
+        // product the shape
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
@@ -79,6 +92,7 @@ void Shape::create(SHAPE shape,
     }
 }
 
+// delete the shape and all associated data and buffers
 Shape::~Shape() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -87,9 +101,14 @@ Shape::~Shape() {
     shader = nullptr;
 }
 
+// render the shape by drawing it to the screen, pass an optional color if you
+// want to have some cool tint on it
 void Shape::draw(glm::vec3 color) {
+    // get its current position size scale and angle and calculate its model
+    // matrix and assign it to the shader uniform
     Movement::getInstance()->move(this->x, this->y, this->z, this->angle,
                                   this->scale);
+    // assignemnt of shades uniform
     shader->Matrix4fv("projection", Movement::getInstance()->getProjection());
     shader->Matrix4fv("view", Movement::getInstance()->getView());
     shader->Matrix4fv("model", Movement::getInstance()->getModel());
@@ -114,6 +133,9 @@ void Shape::draw(glm::vec3 color) {
     Movement::getInstance()->clear();
 }
 
+// pass some x y or radians angle and scale to change the shape
+// it will increment the angle by the angle passed or the positons
+// scale is a to be added features
 void Shape::move(float x, float y, float z, float angle, float scale) {
     this->x += x;
     this->y += y;
@@ -122,7 +144,7 @@ void Shape::move(float x, float y, float z, float angle, float scale) {
     // this->scale += scale;
     // this ->width *= this->scale;
     // this ->height *= this->scale;
-
+    // reset the angle ti be withing 0 to 360
     if (this->angle > 360) {
         this->angle -= 360;
     }
@@ -131,11 +153,13 @@ void Shape::move(float x, float y, float z, float angle, float scale) {
     }
 }
 
+// reinitialize the shape to be drawn to the origin
+// other atrritbuts like texture and shader will remain the same
 void Shape::init_pose() {
     this->x = 0;
     this->y = 0;
     this->z = 1;
-    this->scale=0.9;
+    this->scale = 0.9;
     this->angle = 0;
 }
 
@@ -163,6 +187,8 @@ float Shape::getHeight() {
     return this->height;
 }
 
+// collision detection system in 2d for class of shape
+// doesnt work fine if the width and height are not adjusted with scale
 bool Shape::isColliding(Shape* shape) {
     float x1 = this->x - this->width / 2;
     float x2 = this->x + this->width / 2;

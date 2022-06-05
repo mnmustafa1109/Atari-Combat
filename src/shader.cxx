@@ -1,14 +1,12 @@
-#include <glad/glad.h>  // include glad to get the required OpenGL headers
+#include "../include/shader.hxx"
+#include <GLAD/glad.h>   // include glad to get the required OpenGL headers
+#include <GLFW/glfw3.h>  // include glfw3.h to get the required GLFW functions
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include "../include/glm/glm.hpp"
-
-#include "../include/glm/gtc/matrix_transform.hpp"
 #include "../include/glm/gtc/type_ptr.hpp"
-
-#include "../include/shader.hxx"
 
 Shader::Shader(const std::string vertexPath, const std::string fragmentPath) {
     // 1. retrieve the vertex/fragment source code from filePath
@@ -89,20 +87,26 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath) {
     glDeleteShader(fragment);
 }
 
+// us thw shader program
 void Shader::use() {
     glUseProgram(ID);
 }
 
+// setting an bool unform value in the shader
 void Shader::set(const std::string& name, bool value) const {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
+// setting an int unform value in the shader
 void Shader::set(const std::string& name, int value) const {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
+
+// setting an float unform value in the shader
 void Shader::set(const std::string& name, float value) const {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
+// setting an vec4 unform value in the shader like text cordinate
 void Shader::setv4f(const std::string& name,
                     float v0,
                     float v1,
@@ -111,6 +115,7 @@ void Shader::setv4f(const std::string& name,
     glUniform4f(glGetUniformLocation(ID, name.c_str()), v0, v1, v2, v3);
 }
 
+// setting an vec3 unform value in the shader like light position or color
 void Shader::setv3f(const std::string& name,
                     float v0,
                     float v1,
@@ -118,15 +123,18 @@ void Shader::setv3f(const std::string& name,
     glUniform3f(glGetUniformLocation(ID, name.c_str()), v0, v1, v2);
 }
 
+// setting an vec4 unform value of glm vector in the shader
 void Shader::Matrix4fv(const std::string& name, const glm::mat4& matrix) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE,
                        glm::value_ptr(matrix));
 }
 
+// delete the shader program
 Shader::~Shader() {
     glDeleteProgram(ID);
 }
 
+// constructor for the shader class dont call it directly pweeeeese uwu 
 Shader::Shader() {
     ID = 0;
 }

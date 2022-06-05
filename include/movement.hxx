@@ -2,12 +2,13 @@
 #define MOVEMENT_HXX
 
 #include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
 
 class Movement {
+    // store the model translation matrix
     glm::mat4 model;
+    // store the current view
     glm::mat4 view;
+    // store the projection matrix
     glm::mat4 projection;
     float deltaTime;  // time between current frame and last frame
     float lastFrame;

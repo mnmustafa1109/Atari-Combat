@@ -4,13 +4,12 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "../include/bullet.hxx"
-#include "../include/font.hxx"
-#include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/powerups.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/vehicle.hxx"
 
+// forward declaration
 class Vehicle;
 class Bullet;
 class ResourceMan;

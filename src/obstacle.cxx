@@ -1,21 +1,16 @@
-#include "../include/game.hxx"
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/map.hxx"
-#include "../include/movement.hxx"
 #include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
 #include "../include/shape.hxx"
 #include "../include/texture.hxx"
-#include "../include/uuid.hxx"
 
 Obstacle::Obstacle() {}
 
 Obstacle::Obstacle(H_TYPE type, float x, float y, float angle, float scale) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
-
+    // load the shader
     Shader& rectshader = resourceMan->getShader("rectshader");
+    // check the house type and load its corresponding texture and also assign
+    // its widht and height and scale it to the size of the house
     if (type == HOUSE1) {
         height = 3.85f;
         width = 4.16f;
@@ -66,6 +61,6 @@ Obstacle::Obstacle(H_TYPE type, float x, float y, float angle, float scale) {
                &rectshader);
     }
     this->scale = 1.0;
-
+    // move the house to the x and y coordinates and change its angle
     Shape::move(x, y, 0.0, angle, 0.0);
 }

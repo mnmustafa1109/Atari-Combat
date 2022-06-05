@@ -1,17 +1,12 @@
 #ifndef FONT_HXX
 #define FONT_HXX
-
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include <ft2build.h>
-#include <iostream>
 #include <map>
-#include <string>
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/resourceman.hxx"
 #include "../include/shader.hxx"
+#include "../include/glm/glm.hpp"
+
 
 #include FT_FREETYPE_H
 

@@ -1,13 +1,13 @@
 #ifndef TEXTURE_HXX
 #define TEXTURE_HXX
 
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <iostream>
 
+// texture type 
 enum TYPE { COLOR, TEXTURE, BOTH };
 
+// class for texture
 class Texture {
     unsigned int texture;
     int width;

@@ -2,24 +2,21 @@
 #define BULLET_HXX
 #include <iostream>
 #include <chrono>
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/game.hxx"
-#include "../include/movement.hxx"
-#include "../include/shader.hxx"
 #include "../include/shape.hxx"
-#include "../include/texture.hxx"
 #include "../include/vehicle.hxx"
 
+
+// forward declaration
 enum V_COLOR:short;
 class Vehicle;
 
+// Bullet type
 enum B_TYPE:short {
-    STANDARD
+    STANDARD,BIG
 };
 
 
+// Bullet class
 class Bullet:public Shape {
     B_TYPE type;
     float speed ;

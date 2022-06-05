@@ -1,16 +1,17 @@
 #ifndef SHAPE_HXX
 #define SHAPE_HXX
-
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
-#include "../include/glm/glm.hpp"
+
 #include "../include/shader.hxx"
 #include "../include/texture.hxx"
 
 #include <iostream>
 
+// shapes type
 enum SHAPE { CIRCLE, RECTANGLE, TRIANGLE, SQUARE };
 
+// class for shape
 class Shape {
    protected:
     unsigned int VAO;
