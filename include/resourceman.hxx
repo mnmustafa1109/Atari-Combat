@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "../include/bullet.hxx"
+#include "../include/font.hxx"
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/obstacle.hxx"
@@ -15,6 +16,7 @@
 class Vehicle;
 class Bullet;
 class Player;
+class Font;
 enum B_TYPE : short;
 enum V_COLOR : short;
 
@@ -54,10 +56,13 @@ class ResourceMan {
                           float scale);
     Player& getPlayer(int id, std::string name, int highscore, V_COLOR color);
     Player& getPlayer(int id);
+    Font& getFont(std::string name, std::string path);
+    Font& getFont(std::string name);
     std::map<std::string, Vehicle*>& getVehicles();
     std::map<std::string, Bullet*>& getBullets();
     std::map<std::string, Obstacle*>& getObstacles();
     std::map<int, Player*>& getPlayers();
+    std::map<std::string, Font*>& getFonts();
     Map& getMap(std::string name, M_TYPE type);
     std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();
@@ -80,6 +85,7 @@ class ResourceMan {
     std::map<std::string, Obstacle*> obstacles;
     std::map<int, Player*> players;
     std::map<std::string, irrklang::ISoundSource*> sounds;
+    std::map<std::string, Font*> fonts;
 };
 
 #endif  // !RESOURCEMAN_HXX

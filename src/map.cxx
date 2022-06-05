@@ -34,6 +34,10 @@ Map::Map(M_TYPE type) {
         &(resourceMan->getShape("border", RECTANGLE, -0.02f, 0.0f, 1.0f, 2.88f,
                                 2.16f, 0.0f, &resourceMan->getTexture("border"),
                                 &resourceMan->getShader("rectshader")));
+    overlay = &(resourceMan->getShape("overlay", RECTANGLE, -0.02f, 0.0f, 1.0f,
+                                      2.88f, 2.16f, 0.0f,
+                                      &resourceMan->getTexture("overlay"),
+                                      &resourceMan->getShader("rectshader")));
     Shader& rectshader = resourceMan->getShader("rectshader");
     if (type == DESERT) {
         Texture& desert = resourceMan->getTexture("desert");
@@ -109,7 +113,7 @@ Map::Map(M_TYPE type) {
     this->scale = 1.0;
 }
 
-void Map::draw_objects() {
+void Map::draw_objects(bool is_game_over) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     std::map<std::string, Vehicle*>& vehicles = resourceMan->getVehicles();
     std::map<std::string, Obstacle*>& obstacles = resourceMan->getObstacles();
@@ -128,8 +132,8 @@ void Map::draw_objects() {
     }
     border->draw();
     for (auto& vehicle : vehicles) {
-        int health = (vehicle.second->get_health())/10;
-        for (int i = 0; i < health; i ++) {
+        int health = (vehicle.second->get_health()) / 10;
+        for (int i = 0; i < health; i++) {
             if (vehicle.second->get_name() == "v1") {
                 heart1->move(0.3, 0.0, 0.0, 0.0, 0.0);
                 heart1->draw();
@@ -139,9 +143,13 @@ void Map::draw_objects() {
             }
         }
         if (vehicle.second->get_name() == "v1") {
-            heart1->move(health*(-0.3), 0.0, 0.0, 0.0, 0.0);
+            heart1->move(health * (-0.3), 0.0, 0.0, 0.0, 0.0);
         } else {
-            heart2->move(health*(0.3), 0.0, 0.0, 0.0, 0.0);
+            heart2->move(health * (0.3), 0.0, 0.0, 0.0, 0.0);
         }
     }
+    if (is_game_over) {
+        overlay->draw();
+    }
+    
 }

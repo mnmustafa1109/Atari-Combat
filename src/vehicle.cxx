@@ -24,7 +24,7 @@ Vehicle::Vehicle() {}
 
 Vehicle::Vehicle(std::string name, float x, float y, float angle, int id) {
     this->bullet_count = 0;
-    this->speed = 0.01f;
+    this->speed = 0.012f;
     this->health = 100.0;
     this->name = name;
     this->destroyed = false;
@@ -131,7 +131,6 @@ void Vehicle::move(float x, float y, float rotation) {
         this->y = 0.92f;
     }
     Shape::move(0.0, 0.0, 0.0, 0.0, 0.0);
-    speed = 0.01f;
 }
 
 void ::Vehicle::start_last_hit() {
@@ -161,7 +160,7 @@ void Vehicle::shoot() {
     std::chrono::duration<double> elapsed_seconds;
     end = std::chrono::system_clock::now();
     elapsed_seconds = end - last_shoot;
-    if (elapsed_seconds.count() > 0.1) {
+    if (elapsed_seconds.count() > 0.13) {
         resourceMan->playSound("shot");
         if (bullet_count > 20) {
             return;

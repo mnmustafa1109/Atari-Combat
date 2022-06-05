@@ -162,6 +162,24 @@ std::map<std::string, Bullet*>& ResourceMan::getBullets() {
     return bullets;
 }
 
+Font& ResourceMan::getFont(std::string name, std::string path) {
+    if (fonts.find(name) == fonts.end()) {
+        fonts[name] = new Font(path);
+    }
+    return *fonts[name];
+}
+
+Font& ResourceMan::getFont(std::string name) {
+    if (fonts.find(name) == fonts.end()) {
+        std::cout << "Font " << name << " not found." << std::endl;
+    }
+    return *fonts[name];
+}
+
+std::map<std::string, Font*>& ResourceMan::getFonts() {
+    return fonts;
+}
+
 Map& ResourceMan::getMap(std::string name, M_TYPE type) {
     if (maps.find(name) == maps.end()) {
         maps[name] = new Map(type);

@@ -25,7 +25,7 @@ class Shader {
                 float v1,
                 float v2,
                 float v3) const;
+    void setv3f(const std::string& name, float v0, float v1, float v2) const;
     void Matrix4fv(const std::string& name, const glm::mat4& matrix) const;
-    
 };
 #endif

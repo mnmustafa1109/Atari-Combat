@@ -6,6 +6,7 @@ project(Combat)
 
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(freetype REQUIRED)
 add_library(irrKlang SHARED IMPORTED)
 set_property(TARGET irrKlang PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/irrKlang/libIrrKlang.so")
 
@@ -16,8 +17,9 @@ include/shader.hxx
 include/shape.hxx
 include/texture.hxx
 include/stb_image.h
-    include/movement.hxx
-    include/resourceman.hxx
+include/movement.hxx
+include/resourceman.hxx
+include/font.hxx
     include/vehicle.hxx
     include/bullet.hxx
     include/obstacle.hxx
@@ -37,6 +39,7 @@ set(MY_SOURCE_FILES
     src/stb_image.c
     src/movement.cxx
     src/resourceman.cxx
+    src/font.cxx
     src/vehicle.cxx
     src/bullet.cxx
     src/map.cxx
@@ -55,6 +58,7 @@ ${MY_SOURCE_FILES}
 
 target_link_libraries(Combat glfw OpenGL::GL )
 target_link_libraries(Combat irrKlang)
+target_link_libraries(Combat freetype)
 
 
 

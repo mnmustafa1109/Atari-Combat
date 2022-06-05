@@ -3,13 +3,14 @@
 
 #include <iostream>
 
+#include "../include/game.hxx"
 #include "../include/input.hxx"
 #include "../include/resourceman.hxx"
 
 // process all input: query GLFW whether relevant keys are pressed/released this
 // frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window) {
+void processInput(GLFWwindow* window, Game* game) {
     ResourceMan* resourceMan = ResourceMan::getInstance();
     Vehicle& p1 = resourceMan->getVehicle("v1");
     Vehicle& p2 = resourceMan->getVehicle("v2");
@@ -32,6 +33,11 @@ void processInput(GLFWwindow* window) {
         p2.move(0.00, 0.00, 3.0);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         p2.move(0.00, 0.00, -3.0);
+    if (game->get_game_over()) {
+        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+            game->level_load();
+        }
+    }
 }
 
 void key_callback(GLFWwindow* window,

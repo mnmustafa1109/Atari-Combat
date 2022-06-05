@@ -20,51 +20,8 @@ Shape::Shape(SHAPE shape,
              float angle,
              Texture* texture,
              Shader* shader) {
-    this->shape = shape;
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->scale = 1.0f;
-    this->width = width;
-    this->height = height;
-    this->angle = angle;
-    if (shape == RECTANGLE || shape == SQUARE) {
-        this->texture = texture;
-        this->shader = shader;
-        // rectangle having zero zero as center
-        float vertices[] = {
-            // positions          // colors           // texture coords
-            x + width / 2, y + height / 2, z, 1.0f, 1.0f,
-            x - width / 2, y + height / 2, z, 0.0f, 1.0f,
-            x - width / 2, y - height / 2, z, 0.0f, 0.0f,
-            x + width / 2, y - height / 2, z, 1.0f, 0.0f,
-        };
-        unsigned int indices[] = {
-            0, 1, 2, 0, 2, 3,
-        };
-
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-                     GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-                     GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                              (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                              (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-
-        glBindVertexArray(0);
-    }
+    create(shape, x, y, z, width, height, angle, texture, shader);
 }
-
 void Shape::create(SHAPE shape,
                    float x,
                    float y,
@@ -81,6 +38,7 @@ void Shape::create(SHAPE shape,
     this->width = width;
     this->height = height;
     this->angle = angle;
+    this->scale = 1.0f;
     if (shape == RECTANGLE || shape == SQUARE) {
         this->texture = texture;
         this->shader = shader;
@@ -115,6 +73,9 @@ void Shape::create(SHAPE shape,
         glEnableVertexAttribArray(1);
 
         glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }
 
@@ -133,6 +94,11 @@ void Shape::draw(glm::vec3 color) {
     shader->Matrix4fv("view", Movement::getInstance()->getView());
     shader->Matrix4fv("model", Movement::getInstance()->getModel());
     shader->setv4f("ourColor", color[0], color[1], color[2], 1.0f);
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // un use shader
     if (shape == RECTANGLE || shape == SQUARE) {
         shader->use();
         glActiveTexture(GL_TEXTURE0);
@@ -140,8 +106,11 @@ void Shape::draw(glm::vec3 color) {
         shader->set("texture1", 0);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
     }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     Movement::getInstance()->clear();
 }
 

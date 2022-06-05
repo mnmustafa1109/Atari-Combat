@@ -17,10 +17,11 @@ class Map : public Shape {
     Shape* border;
     Shape* heart1;
     Shape* heart2;
+    Shape* overlay;
     Map();
 
    public:
-    void draw_objects();
+    void draw_objects(bool is_game_over);
     Map(M_TYPE type);
 };
 

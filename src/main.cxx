@@ -2,16 +2,13 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include "../include/main.hxx"
 #include "../include/game.hxx"
 #include "../include/input.hxx"
-
-
+#include "../include/main.hxx"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 // settings
-
 
 int main() {
     // glfw: initialize and configure
@@ -50,6 +47,8 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetKeyCallback(window, key_callback);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_CULL_FACE);
+
     Game game(window);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

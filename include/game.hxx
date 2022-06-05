@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "../include/bullet.hxx"
+#include "../include/font.hxx"
 #include "../include/irrKlang/irrKlang.h"
 #include "../include/map.hxx"
 #include "../include/resourceman.hxx"
@@ -24,6 +25,7 @@ class Game {
     Map* map;
     int level;
     Game();
+    bool is_game_over;
 
    public:
     Game(GLFWwindow* window);
@@ -32,5 +34,9 @@ class Game {
     void render();
     void time_logic();
     void game_logic();
+    void level_load();
+    bool get_game_over() { return is_game_over; };
+    void set_game_over(bool is_game_over) { this->is_game_over = is_game_over; }
 };
+
 #endif  // !HOME_HXX
