@@ -29,6 +29,7 @@ set(MY_HEADER_FILES
     include/player.hxx
     include/powerups.hxx
     include/glad.h
+    include/KHR/khrplatform.h
 )
 
 set(MY_SOURCE_FILES
