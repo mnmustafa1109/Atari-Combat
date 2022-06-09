@@ -1,7 +1,8 @@
 #ifndef GAME_HXX
 #define GAME_HXX
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 #include <iostream>
 #include "../include/bullet.hxx"
 #include "../include/map.hxx"
@@ -29,6 +30,7 @@ class Game {
     int level;
     Game();
     bool is_game_over;
+    bool replay;
 
    public:
     Game(GLFWwindow* window);
@@ -40,6 +42,9 @@ class Game {
     void level_load();
     bool get_game_over() { return is_game_over; };
     void set_game_over(bool is_game_over) { this->is_game_over = is_game_over; }
+    bool get_replay() { return replay; }
+    void set_replay(bool replay) { this->replay = replay; }
+    int get_level() { return level; }
 };
 
 #endif  // !HOME_HXX

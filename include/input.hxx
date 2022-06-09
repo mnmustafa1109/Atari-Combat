@@ -1,8 +1,9 @@
 #ifndef INPUT_HXX
 #define INPUT_HXX 
 
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 #include "../include/game.hxx"
 
 #include <iostream>

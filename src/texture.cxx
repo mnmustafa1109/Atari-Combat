@@ -1,5 +1,6 @@
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 #include "../include/stb_image.h"
 
 #include <iostream>

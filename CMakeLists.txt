@@ -4,22 +4,21 @@ set(CMAKE_CXX_STANDARD 17)
 # set the project name
 project(Combat)
 
-find_package(glfw3 3.3 REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(freetype REQUIRED)
-add_library(irrKlang SHARED IMPORTED)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/glfw)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/freetype)
+add_library(irrKlang STATIC IMPORTED)
 set_property(TARGET irrKlang PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/lib/irrKlang/libIrrKlang.so")
 
 #Bring the headers, such as Student.h into the project
 set(MY_HEADER_FILES
-include/input.hxx
-include/shader.hxx
-include/shape.hxx
-include/texture.hxx
-include/stb_image.h
-include/movement.hxx
-include/resourceman.hxx
-include/font.hxx
+    include/input.hxx
+    include/shader.hxx
+    include/shape.hxx
+    include/texture.hxx
+    include/stb_image.h
+    include/movement.hxx
+    include/resourceman.hxx
+    include/font.hxx
     include/vehicle.hxx
     include/bullet.hxx
     include/obstacle.hxx
@@ -29,6 +28,7 @@ include/font.hxx
     include/main.hxx
     include/player.hxx
     include/powerups.hxx
+    include/glad.h
 )
 
 set(MY_SOURCE_FILES
@@ -58,7 +58,7 @@ ${MY_HEADER_FILES}
 ${MY_SOURCE_FILES}
 )
 
-target_link_libraries(Combat glfw OpenGL::GL )
+target_link_libraries(Combat glfw )
 target_link_libraries(Combat irrKlang)
 target_link_libraries(Combat freetype)
 

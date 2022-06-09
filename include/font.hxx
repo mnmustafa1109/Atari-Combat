@@ -1,8 +1,9 @@
 #ifndef FONT_HXX
 #define FONT_HXX
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
-#include <ft2build.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
+#include "../include/freetype/ft2build.h"
 #include <map>
 #include "../include/shader.hxx"
 #include "../include/glm/glm.hpp"

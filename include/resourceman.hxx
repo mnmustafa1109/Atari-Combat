@@ -77,6 +77,7 @@ class ResourceMan {
 
     std::map<int, Player*>& getPlayers();
     std::map<std::string, Font*>& getFonts();
+    std::map<std::string,Shape*>& getShapes();
     Map& getMap(std::string name, M_TYPE type);
     std::map<std::string, Map*>& getMaps();
     static ResourceMan* getInstance();

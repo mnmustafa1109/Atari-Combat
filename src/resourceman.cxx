@@ -15,8 +15,10 @@
 // initialize the sound engine and display the error message if any
 void ResourceMan::setInitSoundEngine() {
     this->SoundEngine = irrklang::createIrrKlangDevice(
-        irrklang::ESOD_AUTO_DETECT,
-        irrklang::ESEO_FORCE_32_BIT | irrklang::ESEO_USE_3D_BUFFERS);
+        irrklang::ESOD_ALSA,
+        irrklang::ESEO_MULTI_THREADED | irrklang::ESM_NO_STREAMING,
+        "default");
+
     if (!this->SoundEngine) {
         std::cout << "Could not start sound engine" << std::endl;
     }
@@ -40,7 +42,7 @@ void ResourceMan::playSound(std::string name, bool loop) {
     if (sounds.find(name) == sounds.end()) {
         std::cout << "Sound " << name << " not found" << std::endl;
     } else {
-        SoundEngine->play2D(sounds[name], loop);
+        SoundEngine->play3D(sounds[name], {0, 0, 0}, loop);
     }
     return;
 }
@@ -52,7 +54,7 @@ void ResourceMan::delSoundEngine() {
 
 // update the sound engine
 void ResourceMan::updateSound() {
-    SoundEngine->update();
+    // SoundEngine->update();
 }
 
 // get the instance of the resource manager class
@@ -325,6 +327,10 @@ std::vector<pos>& ResourceMan::getPowerpose() {
     return powerpos;
 }
 
+std::map<std::string,Shape*>& ResourceMan::getShapes(){
+    return shapes;
+}
+
 // create a new powerup and return it and along the way if it doesn't exist
 // yet create it everything is random and automated here
 PowerUps& ResourceMan::getPowerup() {
@@ -353,6 +359,7 @@ std::map<std::string, PowerUps*>& ResourceMan::getPowerups() {
 
 // destructor to delete all the resources from the maps and clearing the map
 ResourceMan::~ResourceMan() {
+    SoundEngine->removeAllSoundSources();
     for (auto& i : textures) {
         delete i.second;
     }

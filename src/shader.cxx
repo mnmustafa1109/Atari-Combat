@@ -1,6 +1,7 @@
 #include "../include/shader.hxx"
-#include <GLAD/glad.h>   // include glad to get the required OpenGL headers
-#include <GLFW/glfw3.h>  // include glfw3.h to get the required GLFW functions
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>

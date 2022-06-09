@@ -120,6 +120,7 @@ Map::Map(M_TYPE type) {
         "heart2", RECTANGLE, 1.91f, 1.37f, 0.0f, 0.32022f, 0.30024f, 0.0f,
         &resourceMan->getTexture(vehicles["v2"]->get_h_color()),
         &resourceMan->getShader("rectshader")));
+    std::cout << "Map hearts created" << std::endl;
     this->scale = 1.0;
 }
 
@@ -203,4 +204,15 @@ void Map::draw_objects(bool is_game_over) {
     if (is_game_over) {
         overlay->draw();
     }
+}
+
+Map::~Map() {
+        // delete border
+    delete border;
+    // delete overlay
+    delete overlay;
+    // delete heart1
+    delete heart1;
+    // delete heart2
+    delete heart2;
 }

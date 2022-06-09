@@ -21,6 +21,7 @@ class Map : public Shape {
    public:
     void draw_objects(bool is_game_over);
     Map(M_TYPE type);
+    ~Map();
 };
 
 #endif  // !MAP_HXX

@@ -1,6 +1,7 @@
 #include "../include/font.hxx"
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 #include <algorithm>
 #include <string>
 #include "../include/glm/glm.hpp"

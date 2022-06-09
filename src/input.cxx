@@ -1,5 +1,6 @@
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 
 #include <iostream>
 
@@ -17,6 +18,7 @@ void processInput(GLFWwindow* window, Game* game) {
     // escape key closes window
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+        return;
     }
     // movement of both players
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -38,7 +40,14 @@ void processInput(GLFWwindow* window, Game* game) {
     // if game is paused due to game over wait until enter is pressed
     // then load the new level
     if (game->get_game_over()) {
+        if (game->get_level() > 2) {
+            if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+                resourceMan->playSound("enter");
+                glfwSetWindowShouldClose(window, true);
+            }
+        }
         if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+            game->set_replay(true);
             resourceMan->playSound("enter");
             game->level_load();
         }

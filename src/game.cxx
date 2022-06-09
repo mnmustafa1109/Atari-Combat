@@ -1,5 +1,6 @@
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
+#include "../include/glad.h"
+
+#include "../include/glfw/glfw3.h"
 
 #include "../include/glm/glm.hpp"
 #include "../include/glm/gtc/matrix_transform.hpp"
@@ -68,10 +69,13 @@ V_COLOR get_type(int i) {
             break;
         case 2:
             return GREEN;
+            break;
         case 3:
             return BLUE;
+            break;
         default:
             return RED;
+            break;
     }
     return RED;
 }
@@ -115,19 +119,17 @@ Game::Game(GLFWwindow* window)
     printf("Devices available:\n\n");
     for (int i = 0; i < deviceList->getDeviceCount(); ++i)
         printf("%d: %s\n", i, deviceList->getDeviceDescription(i));
-    resourceMan->setInitSoundEngine();
 
-    this->load();
     resourceMan->initPowerpose();
-    bullets = resourceMan->getBullets();
-    vehicles = resourceMan->getVehicles();
-    players = resourceMan->getPlayers();
-    powerups = resourceMan->getPowerups();
 
     // asking both user its perosnaal information
     menu(0);
     menu(1);
+    resourceMan->setInitSoundEngine();
+    this->load();
     // starting the game
+    resourceMan->playSound("ingame", true);
+
     this->game();
 }
 
@@ -164,7 +166,9 @@ void Game::render() {
                     m->RenderText(players[1]->getName() + " Wins", -0.6f, -0.1f,
                                   0.0015f, glm::vec3(1.0f, 1.0f, 1.0f));
                 }
-                m->RenderText("Press Enter to quite", -0.6f, -0.2f, 0.0005f,
+                m->RenderText("Press Enter to restart", -0.6f, -0.2f, 0.0005f,
+                              glm::vec3(1.0f, 1.0f, 1.0f));
+                m->RenderText("Press x to quite", -0.6f, -0.3f, 0.0005f,
                               glm::vec3(1.0f, 1.0f, 1.0f));
 
                 // if game ended then display who wins
@@ -243,6 +247,7 @@ void Game::load() {
     resourceMan->getFont("main", "main.ttf");
     // setting game over to be false at the beginning
     is_game_over = false;
+    replay = false;
 }
 
 void Game::time_logic() {  // per-frame time logic
@@ -257,20 +262,21 @@ void Game::time_logic() {  // per-frame time logic
 
 void Game::level_load() {
     // reloading the map and the vehicles
+    std::cout << "player " << players[0]->getName() << " lost "
+              << players[0]->getLoss() << " times" << std::endl;
+    std::cout << "player " << players[1]->getName() << " lost "
+              << players[1]->getLoss() << " times" << std::endl;
+    // clearing every other mao in resource manager for new game
+    resourceMan->getBullets().clear();
+    std::cout << "Bullets cleared" << std::endl;
+    resourceMan->getVehicles().clear();
+    std::cout << "Vehicles cleared" << std::endl;
+    resourceMan->getObstacles().clear();
+    std::cout << "Obstacles cleared" << std::endl;
+    resourceMan->getMaps().clear();
+    std::cout << "Maps cleared" << std::endl;
+    resourceMan->getShapes().clear();
     if (this->level < 3) {
-        std::cout << "player " << players[0]->getName() << " lost "
-                  << players[0]->getLoss() << " times" << std::endl;
-        std::cout << "player " << players[1]->getName() << " lost "
-                  << players[1]->getLoss() << " times" << std::endl;
-        // clearing every other mao in resource manager for new game
-        resourceMan->getBullets().clear();
-        std::cout << "Bullets cleared" << std::endl;
-        resourceMan->getVehicles().clear();
-        std::cout << "Vehicles cleared" << std::endl;
-        resourceMan->getObstacles().clear();
-        std::cout << "Obstacles cleared" << std::endl;
-        resourceMan->getMaps().clear();
-        std::cout << "Maps cleared" << std::endl;
         int m_type;
         m_type = uuid::gen_random_i(0, map_types.size() - 1);
         map = &resourceMan->getMap(map_name(map_types[m_type]),
@@ -278,6 +284,7 @@ void Game::level_load() {
         map_types.erase(map_types.begin() + m_type);
         std::cout << "Map loaded" << std::endl;
         is_game_over = false;
+
     } else {
         // if all the levels are done then game is over
         // and update highscores of players
@@ -290,8 +297,17 @@ void Game::level_load() {
             }
         }
         // closing the window
-        glfwSetWindowShouldClose(window, true);
-        return;
+        if (replay) {
+            resourceMan->getPlayers().clear();
+            std::cout << "Players cleared" << std::endl;
+            menu(0);
+            menu(1);
+            load();
+            level = 0;
+            replay = false;
+            is_game_over = false;
+            game();
+        }
     }
 }
 
@@ -349,9 +365,9 @@ void Game::game_logic() {
 
 void Game::game() {
     // glfw: initialize and configure
-    resourceMan->playSound("ingame", true);
     int m_type = uuid::gen_random_i(0, 2);
     map = &resourceMan->getMap(map_name(map_types[m_type]), map_types[m_type]);
+    std::cout << "Map loaded" << std::endl;
     map_types.erase(map_types.begin() + m_type);
 
     // render loop
@@ -373,5 +389,5 @@ void Game::game() {
         // glfw: swap buffers and poll IO events (keys pressed/released,
         glfwPollEvents();
     }
-    resourceMan->delSoundEngine();
+    // resourceMan->delSoundEngine();
 }
