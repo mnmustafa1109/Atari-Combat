@@ -115,8 +115,26 @@ void Vehicle::move(float x, float y, float rotation) {
     for (auto& obstacle : obstacles) {
         if (isColliding(obstacle.second)) {
             // restore its position if its collide
-            this->y = tempy;
-            this->x = tempx;
+            // this->y = tempy;
+
+            // this->x = tempx;
+
+            if ((this->x > ((obstacle.second->getX() +
+                             obstacle.second->getWidth() / 2)))) {
+                this->x = tempx;
+            }
+            if ((this->x < ((obstacle.second->getX() -
+                             obstacle.second->getWidth() / 2)))) {
+                this->x = tempx;
+            }
+            if ((this->y > ((obstacle.second->getY() +
+                             obstacle.second->getHeight() / 2)))) {
+                this->y = tempy;
+            }
+            if ((this->y < ((obstacle.second->getY() -
+                             obstacle.second->getHeight() / 2)))) {
+                this->y = tempy;
+            }
         }
     }
     // chec collision with walls
